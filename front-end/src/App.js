@@ -8,7 +8,7 @@ function App() {
         const fetchData = async () => {
             try {
                 const response = await axios.get(
-                    "http://localhost:8080/api/test"
+                    "http://localhost:8080/api/add"
                 );
                 setData(response.data);
             } catch (error) {
