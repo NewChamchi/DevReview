@@ -8,9 +8,10 @@ function App() {
         const fetchData = async () => {
             try {
                 const response = await axios.get(
-                    "http://localhost:8080/api/add"
+                    "http://localhost:8080/test/all"
                 );
                 setData(response.data);
+                console.log(response.data);
             } catch (error) {
                 console.error("Error fetching data:", error);
             }
@@ -22,11 +23,11 @@ function App() {
     return (
         <div>
             <h1>React & Spring Boot Test</h1>
-            {data ? (
-                <p>Data from backend: {data.message}</p>
+            {/* {data ? (
+                <p>Data from backend: {data}</p>
             ) : (
                 <p>Loading...</p>
-            )}
+            )} */}
         </div>
     );
 }
