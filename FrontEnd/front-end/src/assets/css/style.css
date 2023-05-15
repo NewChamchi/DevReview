@@ -1,11 +1,35 @@
-/********** Template CSS **********/
-:root {
-    --primary: #5b8c51;
-    --secondary: #eddd5e;
-    --light: #f7f7f7;
-    --dark: #404a3d;
+@font-face {
+    font-family: "tway_air";
+    src: url(tway_air.ttf);
 }
 
+/********** Template CSS **********/
+:root {
+    --primary: #6791ff;
+    --secondary: #eddd5e;
+    --light: #f7f7f7;
+    --dark: #292d4a;
+}
+
+body {
+    font-family: "tway_air" !important;
+}
+
+h1,
+.h1,
+h2,
+.h2,
+h3,
+.h3,
+h4,
+.h4,
+h5,
+.h5,
+h6,
+.h6 {
+    font-family: "tway_air" !important;
+    font-weight: 500;
+}
 .back-to-top {
     position: fixed;
     display: none;

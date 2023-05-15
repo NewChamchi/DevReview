@@ -19,6 +19,8 @@ const QuestionCreatePageContainer = () => {
     const [tags, setTags] = useState([]); // 태그를 저장할 상태 변수 추가
     const [inputValue, setInputValue] = useState(""); // 입력 값 저장 상태 변수 추가
 
+    const [isChatGPTUsing, setIsChatGPTUsing] = useState(false);
+
     const onEditorChange = (content) => {
         setValue(content);
     };
@@ -46,11 +48,15 @@ const QuestionCreatePageContainer = () => {
         // 여기에 질문 작성을 처리하는 로직을 추가하세요.
         navigate("/questionList");
     };
-    useEffect(() => {}, []);
+    useEffect(() => {
+        console.log("isChatGPTUsing :", isChatGPTUsing);
+    }, [isChatGPTUsing]);
     const propDatas = {
         modules,
         tags,
         inputValue,
+        isChatGPTUsing,
+        setIsChatGPTUsing,
         onEditorChange,
         onTagChange,
         onTagEnter,

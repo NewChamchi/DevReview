@@ -3,107 +3,279 @@ import styled from "styled-components";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 
+const Comment = ({ comment }) => (
+    <div className="comment">
+        <div className="comment-header">
+            <span className="comment-author">{comment.author}</span>
+            <span className="comment-date">{comment.date}</span>
+        </div>
+        <div
+            className="comment-content"
+            style={{
+                whiteSpace: "pre-wrap",
+            }}
+        >
+            {comment.content}
+        </div>
+    </div>
+);
+
 const QuestionDetailPageComponent = (props) => {
     const {
         questionData,
         answerData,
         modules,
-        showAnswerEditor,
-        setShowAnswerEditor,
+        newComments,
+        newAnswer,
+        updateAnswer,
+        isWritingAnswer,
+        updateAnswerIndex,
+        setNewAnswer,
+        setUpdateAnswer,
+        setIsWritingAnswer,
+        setUpdateAnswerIndex,
+        onQuestionUpdate,
         onQuestionDelete,
+        onAnswerUpdate,
         onAnswerDelete,
         onToggleAnswerEditor,
+        onChangeCommentInput,
+        onSubmitComment,
+        onSubmitAnswer,
     } = props;
 
     return (
         <QuestionDetailPageComponentBlock>
-            <div className="post-container question">
-                <div className="post-header">
-                    <h2>
-                        <span className="post-indicator">Q</span>{" "}
-                        {questionData.title}
-                    </h2>
-                    <div className="post-info">
-                        <div className="post-tags">
-                            {questionData.tags.map((tag, index) => (
-                                <span key={index} className="tag">
-                                    {tag}
-                                </span>
-                            ))}
+            {questionData.type === "normal" ? (
+                <>
+                    <div className="post-container question">
+                        <div className="post-header">
+                            <h2>
+                                <span className="post-indicator">Q</span>{" "}
+                                {questionData.title}
+                            </h2>
+                            <div className="post-info">
+                                <div className="post-tags">
+                                    {questionData.tags.map((tag, index) => (
+                                        <span key={index} className="tag">
+                                            {tag}
+                                        </span>
+                                    ))}
+                                </div>
+                                <span>{questionData.author}</span> |{" "}
+                                <span>{questionData.date}</span>
+                            </div>
                         </div>
-                        <span>{questionData.author}</span> |{" "}
-                        <span>{questionData.date}</span>
-                    </div>
-                </div>
 
-                <div
-                    className="post-content"
-                    dangerouslySetInnerHTML={{ __html: questionData.content }}
-                />
-                <div className="post-actions">
-                    <button className="edit-button">수정</button>
-                    <button
-                        className="delete-button"
-                        onClick={onQuestionDelete}
-                    >
-                        삭제
-                    </button>
-                </div>
-            </div>
-            <button
-                className="add-answer-button"
-                onClick={onToggleAnswerEditor}
-            >
-                답변 달기
-            </button>
-            {showAnswerEditor && (
-                <div className="answer-editor">
-                    <ReactQuill
-                        style={{ height: "300px", marginBottom: "20px" }}
-                        modules={modules}
-                    />
-                    <div className="submit-answer">
-                        <button>등록</button>
-                        <button
-                            onClick={(e) => {
-                                e.preventDefault();
-                                setShowAnswerEditor(false);
+                        <div
+                            className="post-content"
+                            dangerouslySetInnerHTML={{
+                                __html: questionData.content,
                             }}
-                        >
-                            취소
-                        </button>
-                    </div>
-                </div>
-            )}
-            {answerData.map((answer, index) => (
-                <div key={index} className="post-container answer">
-                    <div className="post-header">
-                        <h2>
-                            <span className="post-indicator">A</span> 답변{" "}
-                            {index + 1}
-                        </h2>
-                        <div className="post-info">
-                            <span>{answer.author}</span> |{" "}
-                            <span>{answer.date}</span>
+                        />
+                        <div className="post-actions">
+                            <button
+                                className="edit-button"
+                                onClick={onQuestionUpdate}
+                            >
+                                수정
+                            </button>
+                            <button
+                                className="delete-button"
+                                onClick={onQuestionDelete}
+                            >
+                                삭제
+                            </button>
                         </div>
                     </div>
-                    <div
-                        className="post-content"
-                        dangerouslySetInnerHTML={{ __html: answer.content }}
-                    />
-                    <div className="post-actions">
-                        <button className="edit-button">수정</button>
-                        <button
-                            className="delete-button"
-                            onClick={(index) => {
-                                onAnswerDelete(index);
+                    <button
+                        className="add-answer-button"
+                        onClick={onToggleAnswerEditor}
+                    >
+                        답변 달기
+                    </button>
+                    {isWritingAnswer && (
+                        <div className="answer-editor">
+                            <ReactQuill
+                                style={{
+                                    height: "300px",
+                                    marginBottom: "20px",
+                                }}
+                                modules={modules}
+                                value={newAnswer}
+                                onChange={(value) => {
+                                    setNewAnswer(value);
+                                }}
+                            />
+                            <div className="submit-answer">
+                                <button
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        onSubmitAnswer();
+                                    }}
+                                >
+                                    등록
+                                </button>
+                                <button
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        setIsWritingAnswer(false);
+                                    }}
+                                >
+                                    취소
+                                </button>
+                            </div>
+                        </div>
+                    )}
+                    {answerData.map((answer, index) => (
+                        <div key={index} className="post-container answer">
+                            <div className="post-header">
+                                <h2>
+                                    <span className="post-indicator">A</span>{" "}
+                                    답변 {index + 1}
+                                </h2>
+                                <div className="post-info">
+                                    <span>{answer.author}</span> |{" "}
+                                    <span>{answer.date}</span>
+                                </div>
+                            </div>
+                            {updateAnswerIndex === index ? (
+                                <>
+                                    <ReactQuill
+                                        style={{ marginBottom: "20px" }}
+                                        modules={modules}
+                                        value={updateAnswer}
+                                        onChange={(value) => {
+                                            setUpdateAnswer(value);
+                                        }}
+                                    />
+                                    <div className="post-actions">
+                                        <button
+                                            className="edit-button"
+                                            onClick={() => {
+                                                onAnswerUpdate(answer.id);
+                                            }}
+                                        >
+                                            수정 완료
+                                        </button>
+                                    </div>
+                                </>
+                            ) : (
+                                <>
+                                    <div
+                                        className="post-content"
+                                        dangerouslySetInnerHTML={{
+                                            __html: answer.content,
+                                        }}
+                                    />
+                                    <div className="post-actions">
+                                        <button
+                                            className="edit-button"
+                                            onClick={() => {
+                                                setUpdateAnswer(answer.content);
+                                                setUpdateAnswerIndex(index);
+                                            }}
+                                        >
+                                            수정
+                                        </button>
+                                        <button
+                                            className="delete-button"
+                                            onClick={() => {
+                                                onAnswerDelete(answer.id);
+                                            }}
+                                        >
+                                            삭제
+                                        </button>
+                                    </div>
+                                </>
+                            )}
+
+                            <div className="comments-section">
+                                {answer.comments &&
+                                    answer.comments.map((comment, cIndex) => (
+                                        <Comment
+                                            key={cIndex}
+                                            comment={comment}
+                                        />
+                                    ))}
+                            </div>
+                            <div className="comment-input-container">
+                                <textarea
+                                    className="comment-input"
+                                    placeholder="댓글을 입력하세요..."
+                                    value={newComments[index]}
+                                    onChange={(e) => {
+                                        onChangeCommentInput(e, index);
+                                    }}
+                                />
+                                <button
+                                    className="comment-submit-button"
+                                    onClick={(e) => onSubmitComment(e, index)}
+                                >
+                                    댓글 작성
+                                </button>
+                            </div>
+                        </div>
+                    ))}
+                </>
+            ) : (
+                <>
+                    <div className="post-container question">
+                        <div className="post-header">
+                            <h2>
+                                <span className="post-indicator">Q</span>{" "}
+                                {questionData.title}
+                            </h2>
+                            <div className="post-info">
+                                <div className="post-tags">
+                                    {questionData.tags.map((tag, index) => (
+                                        <span key={index} className="tag">
+                                            {tag}
+                                        </span>
+                                    ))}
+                                </div>
+                                <span>{questionData.author}</span> |{" "}
+                                <span>{questionData.date}</span>
+                            </div>
+                        </div>
+
+                        <div
+                            className="post-content"
+                            dangerouslySetInnerHTML={{
+                                __html: questionData.content,
                             }}
-                        >
-                            삭제
-                        </button>
+                        />
+                        <div className="post-actions">
+                            <button
+                                className="delete-button"
+                                onClick={onQuestionDelete}
+                            >
+                                삭제
+                            </button>
+                        </div>
                     </div>
-                </div>
-            ))}
+                    {answerData.map((answer, index) => (
+                        <div key={index} className="post-container answer">
+                            <div className="post-header">
+                                <h2>
+                                    <span className="post-indicator">A</span>
+                                    ChatGPT를 통한 답변입니다.
+                                </h2>
+                                <div className="post-info">
+                                    <span>{answer.author}</span> |{" "}
+                                    <span>{answer.date}</span>
+                                </div>
+                            </div>
+                            <div
+                                className="post-content"
+                                dangerouslySetInnerHTML={{
+                                    __html: answer.content,
+                                }}
+                            />
+                        </div>
+                    ))}
+                </>
+            )}
         </QuestionDetailPageComponentBlock>
     );
 };
@@ -258,6 +430,76 @@ const QuestionDetailPageComponentBlock = styled.div`
 
     .submit-answer button:hover {
         background-color: #45a049;
+    }
+
+    .comment-input-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: flex-end;
+        margin-top: 20px;
+        margin-bottom: 20px;
+        padding: 10px;
+        background-color: #f8f9fa;
+    }
+
+    .comment-input {
+        width: 100%;
+        height: 100px;
+        padding: 10px;
+        margin-bottom: 10px;
+        border: none;
+        border-radius: 5px;
+        background-color: #fff;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        font-size: 16px;
+        resize: vertical;
+    }
+
+    .comment-input:focus {
+        box-shadow: 0 0 3px rgba(0, 0, 0, 0.12), 0 0 2px rgba(0, 0, 0, 0.24);
+    }
+
+    .comment-submit-button {
+        height: 40px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        padding: 0 15px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+
+    .comment-submit-button:hover {
+        background-color: #0056b3;
+    }
+
+    .comments-section {
+        margin-top: 30px;
+    }
+
+    .comment {
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: 10px;
+        margin-top: 20px;
+        background-color: #f8f9fa;
+    }
+
+    .comment-header {
+        display: flex;
+        justify-content: space-between;
+        font-size: 14px;
+        color: #777;
+        border-bottom: 1px solid #ccc;
+        padding-bottom: 5px;
+    }
+
+    .comment-content {
+        margin-top: 10px;
     }
 `;
 

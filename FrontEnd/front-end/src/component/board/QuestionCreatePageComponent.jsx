@@ -7,9 +7,10 @@ import styled from "styled-components";
 const QuestionCreatePageComponent = (props) => {
     const {
         modules,
-        value,
         tags,
         inputValue,
+        isChatGPTUsing,
+        setIsChatGPTUsing,
         onEditorChange,
         onTagChange,
         onTagEnter,
@@ -19,11 +20,30 @@ const QuestionCreatePageComponent = (props) => {
     return (
         <QuestionCreatePageComponentBlock>
             <h2 style={{ marginBottom: "40px" }}>질문 작성</h2>
-            <input
-                type="text"
-                placeholder="제목을 입력하세요."
-                style={{ marginBottom: "10px", width: "50%" }}
-            />
+            <div
+                style={{
+                    display: "flex",
+                    alignItems: "center",
+                    marginBottom: "10px",
+                }}
+            >
+                <input
+                    type="text"
+                    placeholder="제목을 입력하세요."
+                    style={{ marginRight: "10px", width: "50%" }}
+                />
+                <input
+                    type="checkbox"
+                    id="chatgptCheckbox"
+                    name="chatgptCheckbox"
+                    checked={isChatGPTUsing}
+                    onChange={() => {
+                        setIsChatGPTUsing(!isChatGPTUsing);
+                    }}
+                    style={{ marginRight: "5px" }}
+                />
+                <label for="chatgptCheckbox">ChatGPT에게 질문</label>
+            </div>
             <ReactQuill
                 onChange={onEditorChange}
                 modules={modules}
