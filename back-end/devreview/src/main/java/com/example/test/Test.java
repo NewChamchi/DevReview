@@ -14,6 +14,7 @@ public class Test {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long test_id;
+
     private String test_name;
     private String test_password;
 

@@ -5,12 +5,31 @@
     <option name="linkedExternalProjectsSettings">
       <GradleProjectSettings>
         <option name="distributionType" value="DEFAULT_WRAPPED" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$/back-end/test" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="gradleHome" value="$PROJECT_DIR$/../../../Gradle/gradle-6.9.1" />
-        <option name="gradleJvm" value="#JAVA_HOME" />
         <option name="modules">
           <set>
-            <option value="$PROJECT_DIR$/back-end/test" />
+            <option value="$PROJECT_DIR$" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+      <GradleProjectSettings>
+        <option name="distributionType" value="DEFAULT_WRAPPED" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/FrontEnd" />
+        <option name="gradleHome" value="$PROJECT_DIR$/../../../Gradle/gradle-6.9.1" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/FrontEnd" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+      <GradleProjectSettings>
+        <option name="distributionType" value="DEFAULT_WRAPPED" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/back-end/devreview" />
+        <option name="gradleHome" value="$PROJECT_DIR$/../../../Gradle/gradle-6.9.1" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/back-end/devreview" />
           </set>
         </option>
       </GradleProjectSettings>
