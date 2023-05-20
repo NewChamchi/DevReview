@@ -2,13 +2,13 @@
 FROM mysql:8.0
 
 # Set the working directory.
-WORKDIR /app
+# WORKDIR /app
 
 # Set environment variables for MySQL
-ENV MYSQL_ROOT_PASSWORD my-secret-pw
-ENV MYSQL_DATABASE testdb
-ENV MYSQL_USER testuser
-ENV MYSQL_PASSWORD testpass
+ENV MYSQL_ROOT_PASSWORD akdlsql
+ENV MYSQL_DATABASE devreview
+# ENV MYSQL_USER root
+# ENV MYSQL_PASSWORD akdlsql
 
 # Add initialization SQL script
 ADD ./init.sql /docker-entrypoint-initdb.d/
