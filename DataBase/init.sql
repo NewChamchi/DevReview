@@ -34,7 +34,7 @@ CREATE TABLE `answer` (
   KEY `ques_id_idx` (`ques_id`),
   CONSTRAINT `answer_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `answer_ibfk_2` FOREIGN KEY (`ques_id`) REFERENCES `question` (`ques_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -43,7 +43,36 @@ CREATE TABLE `answer` (
 
 LOCK TABLES `answer` WRITE;
 /*!40000 ALTER TABLE `answer` DISABLE KEYS */;
+INSERT INTO `answer` VALUES (1,1,1,'answerishere',0,'2023-05-25 03:34:12');
 /*!40000 ALTER TABLE `answer` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `attached_file`
+--
+
+DROP TABLE IF EXISTS `attached_file`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+ SET character_set_client = utf8mb4 ;
+CREATE TABLE `attached_file` (
+  `file_id` int(11) NOT NULL AUTO_INCREMENT,
+  `file_extention` varchar(255) DEFAULT NULL,
+  `file_address` varchar(255) DEFAULT NULL,
+  `file_name` varchar(255) DEFAULT NULL,
+  `chat_id` int(11) NOT NULL,
+  PRIMARY KEY (`file_id`),
+  KEY `chatid_idx` (`chat_id`),
+  CONSTRAINT `chat_id` FOREIGN KEY (`chat_id`) REFERENCES `chatting` (`chat_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `attached_file`
+--
+
+LOCK TABLES `attached_file` WRITE;
+/*!40000 ALTER TABLE `attached_file` DISABLE KEYS */;
+/*!40000 ALTER TABLE `attached_file` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -54,18 +83,20 @@ DROP TABLE IF EXISTS `chatting`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
  SET character_set_client = utf8mb4 ;
 CREATE TABLE `chatting` (
-  `chat_id` int(11) NOT NULL,
+  `chat_id` int(11) NOT NULL AUTO_INCREMENT,
   `group_id` int(11) NOT NULL,
   `chat_content` varchar(45) NOT NULL,
   `chat_time` datetime NOT NULL,
   `chat_type` int(11) DEFAULT NULL,
-  `chat_seq` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
+  `file_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`chat_id`),
-  KEY `group_id_idx` (`group_id`),
   KEY `user_id_idx` (`user_id`),
-  CONSTRAINT `chatting_ibfk_1` FOREIGN KEY (`group_id`) REFERENCES `group` (`group_id`),
-  CONSTRAINT `chatting_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
+  KEY `file_id_idx` (`file_id`),
+  KEY `group_idd_idx` (`group_id`),
+  CONSTRAINT `chatting_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `file_id` FOREIGN KEY (`file_id`) REFERENCES `attached_file` (`file_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `group_idd` FOREIGN KEY (`group_id`) REFERENCES `group` (`group_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -86,18 +117,17 @@ DROP TABLE IF EXISTS `comment`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
  SET character_set_client = utf8mb4 ;
 CREATE TABLE `comment` (
-  `comment_id` int(11) NOT NULL AUTO_INCREMENT,
+  `comment_id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `comment_content` varchar(255) DEFAULT NULL,
+  `comment_time` datetime(6) DEFAULT NULL,
   `ans_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
-  `comment_content` varchar(45) NOT NULL,
-  `comment_time` datetime NOT NULL,
-  `comment_seq` int(11) DEFAULT NULL,
   PRIMARY KEY (`comment_id`),
   KEY `ans_id_idx` (`ans_id`),
   KEY `user_id_idx` (`user_id`),
-  CONSTRAINT `comment_ibfk_1` FOREIGN KEY (`ans_id`) REFERENCES `answer` (`ans_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  CONSTRAINT `comment_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  CONSTRAINT `FK2md1vioaqfcau5jr6d9umllva` FOREIGN KEY (`ans_id`) REFERENCES `answer` (`ans_id`),
+  CONSTRAINT `FK8kcum44fvpupyw6f5baccx25c` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -110,34 +140,6 @@ LOCK TABLES `comment` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `file`
---
-
-DROP TABLE IF EXISTS `file`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8mb4 ;
-CREATE TABLE `file` (
-  `file_id` int(11) NOT NULL AUTO_INCREMENT,
-  `file_name` varchar(45) NOT NULL,
-  `file_extention` varchar(45) NOT NULL,
-  `file_address` varchar(45) NOT NULL,
-  `chat_id` int(11) NOT NULL,
-  PRIMARY KEY (`file_id`),
-  KEY `chat_id_idx` (`chat_id`),
-  CONSTRAINT `chat_id` FOREIGN KEY (`chat_id`) REFERENCES `chatting` (`chat_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `file`
---
-
-LOCK TABLES `file` WRITE;
-/*!40000 ALTER TABLE `file` DISABLE KEYS */;
-/*!40000 ALTER TABLE `file` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `group`
 --
 
@@ -145,7 +147,7 @@ DROP TABLE IF EXISTS `group`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
  SET character_set_client = utf8mb4 ;
 CREATE TABLE `group` (
-  `group_id` int(11) NOT NULL,
+  `group_id` int(11) NOT NULL AUTO_INCREMENT,
   `group_name` varchar(45) NOT NULL,
   `group_intro` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`group_id`)
@@ -176,7 +178,7 @@ CREATE TABLE `notice` (
   `notice_time` datetime DEFAULT NULL,
   PRIMARY KEY (`notice_id`),
   KEY `group_id_idx` (`group_id`),
-  CONSTRAINT `notice_ibfk_1` FOREIGN KEY (`group_id`) REFERENCES `group` (`group_id`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `group_id` FOREIGN KEY (`group_id`) REFERENCES `group` (`group_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -197,14 +199,14 @@ DROP TABLE IF EXISTS `post`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
  SET character_set_client = utf8mb4 ;
 CREATE TABLE `post` (
-  `post_id` int(11) NOT NULL,
+  `post_id` int(11) NOT NULL AUTO_INCREMENT,
   `post_title` varchar(45) NOT NULL,
   `post_content` varchar(45) NOT NULL,
   `group_id` int(11) NOT NULL,
   `post_time` datetime DEFAULT NULL,
   PRIMARY KEY (`post_id`),
   KEY `group_id_idx` (`group_id`),
-  CONSTRAINT `group_id` FOREIGN KEY (`group_id`) REFERENCES `group` (`group_id`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `group_id_idx` FOREIGN KEY (`group_id`) REFERENCES `group` (`group_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -227,10 +229,13 @@ DROP TABLE IF EXISTS `post_tag`;
 CREATE TABLE `post_tag` (
   `post_id` int(11) NOT NULL,
   `tag_id` int(11) NOT NULL,
-  PRIMARY KEY (`post_id`,`tag_id`),
+  `posttag_id` int(11) NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`posttag_id`),
   KEY `tag_id_idx` (`tag_id`),
-  CONSTRAINT `post_id` FOREIGN KEY (`post_id`) REFERENCES `post` (`post_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `tag_id` FOREIGN KEY (`tag_id`) REFERENCES `tag` (`tag_id`) ON DELETE CASCADE ON UPDATE CASCADE
+  KEY `tag_id_ix` (`tag_id`),
+  KEY `post_idd_idx` (`post_id`),
+  CONSTRAINT `post_idd` FOREIGN KEY (`post_id`) REFERENCES `post` (`post_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `tag_id_ix` FOREIGN KEY (`tag_id`) REFERENCES `tag` (`tag_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -260,7 +265,7 @@ CREATE TABLE `question` (
   PRIMARY KEY (`ques_id`),
   KEY `user_id_idx` (`user_id`),
   CONSTRAINT `user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -269,6 +274,7 @@ CREATE TABLE `question` (
 
 LOCK TABLES `question` WRITE;
 /*!40000 ALTER TABLE `question` DISABLE KEYS */;
+INSERT INTO `question` VALUES (1,'newpost',1,'newcontent','2023-05-25 03:33:38',2);
 /*!40000 ALTER TABLE `question` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -282,11 +288,13 @@ DROP TABLE IF EXISTS `question_tag`;
 CREATE TABLE `question_tag` (
   `ques_id` int(11) NOT NULL,
   `tag_id` int(11) NOT NULL,
-  PRIMARY KEY (`ques_id`,`tag_id`),
-  KEY `tag_id_idx` (`tag_id`),
+  `questag_id` bigint(20) NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`questag_id`),
+  KEY `question_tag_ibfk_1` (`ques_id`),
+  KEY `tag_idd_idx` (`tag_id`),
   CONSTRAINT `question_tag_ibfk_1` FOREIGN KEY (`ques_id`) REFERENCES `question` (`ques_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `question_tag_ibfk_2` FOREIGN KEY (`tag_id`) REFERENCES `tag` (`tag_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  CONSTRAINT `tag_id` FOREIGN KEY (`tag_id`) REFERENCES `tag` (`tag_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -295,6 +303,7 @@ CREATE TABLE `question_tag` (
 
 LOCK TABLES `question_tag` WRITE;
 /*!40000 ALTER TABLE `question_tag` DISABLE KEYS */;
+INSERT INTO `question_tag` VALUES (1,1,1);
 /*!40000 ALTER TABLE `question_tag` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -306,10 +315,10 @@ DROP TABLE IF EXISTS `tag`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
  SET character_set_client = utf8mb4 ;
 CREATE TABLE `tag` (
-  `tag_id` int(11) NOT NULL,
+  `tag_id` int(11) NOT NULL AUTO_INCREMENT,
   `tag_name` varchar(45) NOT NULL,
   PRIMARY KEY (`tag_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -318,6 +327,7 @@ CREATE TABLE `tag` (
 
 LOCK TABLES `tag` WRITE;
 /*!40000 ALTER TABLE `tag` DISABLE KEYS */;
+INSERT INTO `tag` VALUES (1,'Spring');
 /*!40000 ALTER TABLE `tag` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -361,10 +371,12 @@ CREATE TABLE `user_group` (
   `group_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `user_group_is_block` tinyint(4) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`group_id`,`user_id`),
+  `usergroup_id` int(11) NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`usergroup_id`),
   KEY `user_id_idx` (`user_id`),
-  CONSTRAINT `user_group_ibfk_1` FOREIGN KEY (`group_id`) REFERENCES `group` (`group_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `user_group_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
+  KEY `group_id_ix_idx` (`group_id`),
+  CONSTRAINT `group_id_ix` FOREIGN KEY (`group_id`) REFERENCES `group` (`group_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `user_id_ix` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -386,4 +398,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-05-20 10:34:42
+-- Dump completed on 2023-05-26 22:38:01

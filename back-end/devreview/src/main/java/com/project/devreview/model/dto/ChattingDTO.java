@@ -10,7 +10,7 @@ public class ChattingDTO {
     private String content;
     private LocalDateTime datetime;
     private int type;
-    private int seq;
+//    private int seq;
     private Long user_id;
     private Long group_id;
 

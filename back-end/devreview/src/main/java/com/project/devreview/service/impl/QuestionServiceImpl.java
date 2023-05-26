@@ -1,15 +1,18 @@
-package com.project.devreview.service;
+package com.project.devreview.service.impl;
 
 import com.project.devreview.model.domain.Question;
 import com.project.devreview.model.dto.QuestionDTO;
 import com.project.devreview.repository.QuestionRepository;
+import com.project.devreview.service.interf.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
-public class QuestionServiceImpl implements QuestionService{
+@Transactional
+public class QuestionServiceImpl implements QuestionService {
     @Autowired
     QuestionRepository questionRepository;
 
@@ -36,10 +39,10 @@ public class QuestionServiceImpl implements QuestionService{
     }
 
     @Override
-    public Question updateQues(QuestionDTO questionDTO) {
-        Question ques = questionDTO.toEntity();
-        questionRepository.save(ques);
-        return ques;
+    public Boolean updateQues(QuestionDTO ques) {
+//        Question ques = questionDTO.toEntity();
+        questionRepository.updateTitleAndContent(ques.getId(),ques.getTitle(),ques.getContent());
+        return true;
     }
 
     @Override

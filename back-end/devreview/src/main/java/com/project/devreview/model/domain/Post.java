@@ -26,5 +26,5 @@ public class Post {
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "group_id")
-    private Group group;
+    private Team team;
 }

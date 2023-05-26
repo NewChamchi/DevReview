@@ -12,10 +12,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 
-@SpringBootApplication(scanBasePackages = "com.project.devreview")
-@Transactional
+//@SpringBootApplication(scanBasePackages = "com.project.devreview")
+//@Transactional
 //@RunWith(SpringRunner.class)
-@SpringBootTest(classes = DevreviewApplication.class)
+@SpringBootTest
 class UserRepositoryTest {
         @Autowired private UserRepository userRepository;
 //        @Autowired private UserService userService;

@@ -24,8 +24,8 @@ public class Chatting {
     @Column(name = "chat_type")
     private int type;
 
-    @Column(name = "chat_seq")
-    private int seq;
+/*    @Column(name = "chat_seq")
+    private int seq;*/
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
@@ -33,9 +33,9 @@ public class Chatting {
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "group_id")
-    private Group group;
+    private Team team;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "file_id")
-    private File file;
+    private AttachedFile attachedFile;
 }

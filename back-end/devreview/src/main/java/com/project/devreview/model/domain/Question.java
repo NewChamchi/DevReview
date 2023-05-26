@@ -12,7 +12,6 @@ import java.util.List;
 
 @Entity
 @Getter
-@Setter
 @NoArgsConstructor
 public class Question {
     @Id
@@ -32,24 +31,16 @@ public class Question {
     @Column(name = "ques_hit")
     private int hit;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
     @JoinColumn(name = "user_id")
     private User user;
 
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
     private List<Answer> answers = new ArrayList<>();
 
-    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
-    private List<QuesTag> quesTagList = new ArrayList<>();
+//    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
+//    private List<QuesTag> quesTagList = new ArrayList<>();
 
-    @Builder
-    public Question(String title, String content, LocalDateTime time, int hit, User user){
-        this.title=title;
-        this.content=content;
-        this.time = time;
-        this.hit = hit;
-        this.user = user;
-    }
 
     @Builder
     public Question(Long id, String title, String content, LocalDateTime time, int hit, User user){
@@ -59,5 +50,17 @@ public class Question {
         this.time = time;
         this.hit = hit;
         this.user = user;
+    }
+    @Builder
+    public Question(String title, String content, LocalDateTime time, int hit, User user){
+        this.title=title;
+        this.content=content;
+        this.time = time;
+        this.hit = hit;
+        this.user = user;
+    }
+
+    public void setHit(int hit){
+        this.hit = hit;
     }
 }
