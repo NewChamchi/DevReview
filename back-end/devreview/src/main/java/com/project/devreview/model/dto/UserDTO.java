@@ -16,7 +16,8 @@ public class UserDTO {
     private String password;
 
     @Builder
-    public UserDTO(String name, String email, int mic, int audio, String loginId, String password){
+    public UserDTO(Long id, String name, String email, int mic, int audio, String loginId, String password){
+        this.id = id;
         this.name = name;
         this.email = email;
         this.mic = mic;
@@ -45,6 +46,10 @@ public class UserDTO {
                 .loginId(loginId)
                 .password(password)
                 .build();
+    }
+
+    public static UserDTO toDto(User user){
+        return new UserDTO(user);
     }
 
 }

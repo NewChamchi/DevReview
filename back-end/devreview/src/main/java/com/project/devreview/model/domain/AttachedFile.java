@@ -7,11 +7,11 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor
-public class File {
+public class AttachedFile {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "file_id")
-    private Long id;
+    private Long file_id;
 
     @Column(name = "file_name")
     private String name;
@@ -19,7 +19,10 @@ public class File {
     @Column(name = "file_extention")
     private String extention;
 
-    @Column(name = "file_adddress")
+    @Column(name = "file_address")
     private String fileadd;
+
+    @OneToOne(mappedBy = "attachedFile")
+    private Chatting chatting;
 
 }
