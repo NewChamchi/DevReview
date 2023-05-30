@@ -26,7 +26,7 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     public QuestionDTO readQues(Long id) {
         Question ques = questionRepository.findById(id);
-        ques.setHit(ques.getHit()+1);
+//        ques.setHit(ques.getHit()+1);
         QuestionDTO questionDTO = new QuestionDTO(ques);
         return questionDTO;
     }
