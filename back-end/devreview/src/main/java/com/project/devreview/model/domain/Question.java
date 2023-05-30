@@ -38,8 +38,8 @@ public class Question {
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
     private List<Answer> answers = new ArrayList<>();
 
-//    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
-//    private List<QuesTag> quesTagList = new ArrayList<>();
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
+    private List<QuesTag> quesTagList = new ArrayList<>();
 
 
     @Builder

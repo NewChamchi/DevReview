@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 
 @Data
 public class TagDTO {
-    private long id;
+    private Long id;
     private String name;
 
     public TagDTO(Long id, String name){
@@ -34,4 +34,5 @@ public class TagDTO {
         return tags.stream()
                 .map(TagDTO::toDto).collect(Collectors.toList());
     }
+
 }

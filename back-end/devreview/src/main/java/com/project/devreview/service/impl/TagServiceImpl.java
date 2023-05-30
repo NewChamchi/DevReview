@@ -27,6 +27,21 @@ public class TagServiceImpl implements TagService {
         TagDTO tagDTO = TagDTO.toDto(tagRepository.findById(id));
         return tagDTO;
     }
+
+    @Override
+    public TagDTO readTagByName(String name) {
+        TagDTO tagDTO = TagDTO.toDto(tagRepository.findByName(name));
+        return tagDTO;
+    }
+
+    @Override
+    public Boolean isExist(String name) {
+        if(tagRepository.findByName(name)==null){
+            return false;
+        }
+        return true;
+    }
+
     @Override
     public List<TagDTO> readByQues(QuestionDTO questionDTO) {
         return null;

@@ -37,10 +37,21 @@ public class QuesTagServiceImpl implements QuesTagService {
 
     @Override
     public List<TagDTO> findTagByQues(QuestionDTO questionDTO) {
-        List<QuesTag> quesTags = quesTagRepository.findByQuestion(questionDTO.toEntity());
+        List<QuesTag> quesTags = quesTagRepository.findByQuestionId(questionDTO.getId());
         List<QuesTagDTO> quesTagDTOS = QuesTagDTO.listEntityToDto(quesTags);
         List<TagDTO> tags = new ArrayList<>();
         for(QuesTagDTO quesTagDTO:quesTagDTOS){
+            tags.add(quesTagDTO.getTagDTO());
+        }
+        return tags;
+    }
+
+    @Override
+    public List<TagDTO> findTagByQuesId(Long quesId) {
+        List<QuesTag> quesTags = quesTagRepository.findByQuestionId(quesId);
+        List<QuesTagDTO> quesTagDTOS = QuesTagDTO.listEntityToDto(quesTags);
+        List<TagDTO> tags = new ArrayList<>();
+        for(QuesTagDTO quesTagDTO : quesTagDTOS){
             tags.add(quesTagDTO.getTagDTO());
         }
         return tags;
@@ -55,5 +66,15 @@ public class QuesTagServiceImpl implements QuesTagService {
             questions.add(quesTagDTO.getQuestionDTO());
         }
         return questions;
+    }
+
+    @Override
+    public Boolean remove(Long questagId) {
+        return quesTagRepository.deleteById(questagId);
+    }
+
+    @Override
+    public Boolean removeByQuesTag(Long quesId, Long tagId) {
+        return quesTagRepository.deleteByQuesIdAndTagId(quesId,tagId);
     }
 }
