@@ -1,6 +1,7 @@
 package com.project.devreview.model.domain;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -14,7 +15,7 @@ public class Team {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "group_id")
-    private long id;
+    private Long id;
 
     @Column(name = "group_name")
     private String name;
@@ -33,4 +34,17 @@ public class Team {
 
     @OneToMany(mappedBy = "team", cascade = CascadeType.ALL)
     private List<Post> posts = new ArrayList<>();
+
+
+    @Builder
+    public Team(Long id,String name, String intro){
+        this.id = id;
+        this.name = name;
+        this.intro = intro;
+    }
+    @Builder
+    public Team(String name, String intro){
+        this.name = name;
+        this.intro = intro;
+    }
 }

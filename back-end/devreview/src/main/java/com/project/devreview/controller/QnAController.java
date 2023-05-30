@@ -2,20 +2,16 @@ package com.project.devreview.controller;
 
 import com.project.devreview.model.dto.*;
 import com.project.devreview.service.interf.*;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -60,7 +56,8 @@ public class QnAController {
             questionjson.put("views",questionDTO.getHit());
             questionArray.put(questionjson);
         }
-        return new ResponseEntity<>(questionArray.toList(),HttpStatus.OK);
+//        return new ResponseEntity<>(questionArray.toList(),HttpStatus.OK);
+        return new ResponseEntity<>(questionlist, HttpStatus.OK);
     }
 
     @GetMapping("/question/detail/normal/{ques_id}")
@@ -71,7 +68,8 @@ public class QnAController {
 
         QuestionDTO questionDTO = questionService.readQues(ques_id);
 
-        List<AnswerDTO> answers = answerService.readAnswersByQues(questionDTO);
+//        List<AnswerDTO> answers = answerService.readAnswersByQues(questionDTO);
+        List<AnswerDTO> answers = questionService.readAnswers(ques_id);
         JSONObject questionpage = new JSONObject();
         JSONArray answerjsons = new JSONArray();
         JSONArray commentArrs = new JSONArray();
@@ -111,6 +109,7 @@ public class QnAController {
 
         return new ResponseEntity<>(response.toMap(), HttpStatus.OK);
     }
+
     @PostMapping("/question/create")
     @ResponseBody
     public String writeQuestion(@RequestBody HashMap<String, Object> map){
@@ -139,22 +138,54 @@ public class QnAController {
         return new ResponseEntity<>(questionjson.toMap(),HttpStatus.OK);
     }
 
-    //태그 부분 수정할 것
+    //테스트X
     @PutMapping("/question/update")
     @ResponseBody
     public String updateQuestion(@RequestBody Map<String, Object> map){
         QuestionDTO questionDTO = questionService.readQues((Long) map.get("id"));
+        List<String> tags = (List<String>) map.get("tags");
+        List<String> origintags = new ArrayList<>();
+        for(TagDTO tagDTO:quesTagService.findTagByQues(questionDTO)){
+            origintags.add(tagDTO.getName());
+        }
+        for(String tag:tags){
+            if(!origintags.contains(tag)){
+                if(tagService.isExist(tag)){
+                    quesTagService.registerQuesTag(questionDTO.getId(),tagService.readTagByName(tag).getId());
+                    origintags.remove(tag);
+                }
+                else{
+                    tagService.setNewTag(tag);
+                    quesTagService.registerQuesTag(questionDTO.getId(),tagService.readTagByName(tag).getId());
+                    origintags.remove(tag);
+                }
+            } else if (origintags.contains(tag)) {
+                origintags.remove(tag);
+            }
+        }
+        for(String tag:origintags){
+            if(!tags.contains(tag)){
+                Long quesId = questionDTO.getId();
+                Long tagId = tagService.readTagByName(tag).getId();
+                quesTagService.removeByQuesTag(quesId,tagId);
+            }
+        }
         questionDTO.setTitle(map.get("title").toString());
         questionDTO.setContent(map.get("content").toString());
         List<TagDTO> newQuestag = quesTagService.findTagByQues(questionDTO);
         questionService.updateQues(questionDTO);
+        System.out.println(questionService.readQues(questionDTO.getId()));
         return "질문 수정 성공";
     }
 
-    //연관 답변&댓글 삭제 추가할 것
+    //테스트 전
     @DeleteMapping("/question/delete/{id}")
     @ResponseBody
     public String deleteQuestion(@PathVariable("id") Long id){
+        List<Long> ids = answerService.deleteAnswer(id);
+        for(Long ansid : ids){
+            commentService.deleteByAnswer(ansid);
+        }
         questionService.deleteQues(id);
         return "질문 삭제 성공";
     }

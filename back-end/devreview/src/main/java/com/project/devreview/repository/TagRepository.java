@@ -10,4 +10,5 @@ public interface TagRepository extends Repository<Tag,Long> {
     void save(Tag tag);
     List<Tag> findAll();
     Tag findById(Long id);
+    Tag findByName(String name);
 }

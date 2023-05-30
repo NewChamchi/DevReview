@@ -11,5 +11,5 @@ public interface AnswerService {
     public List<AnswerDTO> readAnswersByQues(QuestionDTO questionDTO);
     public AnswerDTO readById(Long id);
     public int updateAnswer(AnswerDTO answerDTO);
-    public int deleteAnswer(Long id);
+    public List<Long> deleteAnswer(Long id);
 }
