@@ -15,6 +15,14 @@ import QuestionUpdatePage from "../page/board/QuestionUpdatePage";
 import MyQuestionPage from "../page/myPage/MyQuestionPage";
 import MyAnswerPage from "../page/myPage/MyAnswerPage";
 import MyProfilePage from "../page/myPage/MyProfilePage";
+import GroupListPage from "../page/group/GroupListPage";
+import GroupPostListPage from "../page/group/post/GroupPostListPage";
+import GroupPostCreatePage from "../page/group/post/GroupPostCreatePage";
+import GroupMainPage from "../page/group/GroupMainPage";
+import GroupExilePage from "../page/group/admin/GroupExilePage";
+import GroupCreatePage from "../page/group/admin/GroupCreatePage";
+import GroupManagePage from "../page/group/admin/GroupManagePage";
+import GroupPostPage from "../page/group/post/GroupPostPage";
 
 const Switch = () => {
     return (
@@ -37,6 +45,14 @@ const Switch = () => {
             <Route path="/myAnswer" element={<MyAnswerPage />} />
             <Route path="/myProfile" element={<MyProfilePage />} />
             <Route path="/changePassword" element={<ChangePasswordPage />} />
+            <Route path="/groupList" element={<GroupListPage />} />
+            <Route path="/groupMain" element={<GroupMainPage />} />
+            <Route path="/groupPostList/:id" element={<GroupPostListPage />} />
+            <Route path="/groupPostCreate" element={<GroupPostCreatePage />} />
+            <Route path="/groupPost/:id" element={<GroupPostPage />} />
+            <Route path="/groupExile" element={<GroupExilePage />} />
+            <Route path="/groupCreate" element={<GroupCreatePage />} />
+            <Route path="/groupManage" element={<GroupManagePage />} />
             <Route path="*" element={<NotFoundError />} />
         </Routes>
     );

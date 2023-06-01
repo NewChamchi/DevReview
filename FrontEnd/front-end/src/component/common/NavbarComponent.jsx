@@ -32,7 +32,7 @@ const NavbarComponent = (props) => {
                             Q&A
                         </NavLink>
                         <NavLink
-                            to="/meetup"
+                            to="/groupList"
                             className="nav-item nav-link"
                             activeClassName="active"
                             exact
