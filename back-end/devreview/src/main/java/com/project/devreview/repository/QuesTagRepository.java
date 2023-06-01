@@ -1,6 +1,7 @@
 package com.project.devreview.repository;
 
 import com.project.devreview.model.domain.QuesTag;
+import com.project.devreview.model.domain.Question;
 import com.project.devreview.model.domain.Tag;
 import org.springframework.data.repository.Repository;
 
@@ -14,5 +15,5 @@ public interface QuesTagRepository extends Repository<QuesTag, Long> {
     QuesTag findById(Long id);
 
     Boolean deleteById(Long id);
-    Boolean deleteByQuesIdAndTagId(Long quesId, Long TagId);
+    Boolean deleteByQuestionAndTag(Question quesId, Tag TagId);
 }
