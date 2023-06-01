@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 
 @Data
 public class QuestionDTO {
+    private Long id;
     private String title;
     private String content;
     private LocalDateTime time;
@@ -25,7 +26,17 @@ public class QuestionDTO {
         this.hit = hit;
         this.userDTO = userDTO;
     }
+    @Builder
+    public QuestionDTO(Long id, String title, String content, LocalDateTime time, int hit, UserDTO userDTO){
+        this.id = id;
+        this.title=title;
+        this.content=content;
+        this.time = time;
+        this.hit = hit;
+        this.userDTO = userDTO;
+    }
     public QuestionDTO(Question question){
+        id = question.getId();
         title = question.getTitle();
         content = question.getContent();
         time = question.getTime();
@@ -39,6 +50,7 @@ public class QuestionDTO {
 
     public Question toEntity(){
         return Question.builder()
+                .id(id)
                 .title(title)
                 .content(content)
                 .time(time)
@@ -49,6 +61,7 @@ public class QuestionDTO {
 
     public Question toEntity(User setUser){
         return Question.builder()
+                .id(id)
                 .title(title)
                 .content(content)
                 .time(time)
@@ -57,13 +70,13 @@ public class QuestionDTO {
                 .build();
     }
 
-    public static QuestionDTO toList(Question question){
+    public static QuestionDTO toDto(Question question){
         return new QuestionDTO(question);
     }
 
     public static List<QuestionDTO> listEntityToDto(List<Question> questions){
         return questions.stream()
-                .map(QuestionDTO::toList).collect(Collectors.toList());
+                .map(QuestionDTO::toDto).collect(Collectors.toList());
     }
 
 }

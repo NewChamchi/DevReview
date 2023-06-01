@@ -11,6 +11,7 @@ import java.util.List;
 public interface UserRepository extends Repository<User, Long> {
     User save(User user);
     User findById(long id);
+    User findByName(String name);
     List<User> findAll();
     long count();
     void delete(User user);
