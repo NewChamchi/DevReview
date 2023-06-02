@@ -121,6 +121,112 @@ const GroupMainPageComponent = (props) => {
         },
     ];
 
+    const groupMainData = {
+        noticeTitle: "주간 공부 계획",
+        noticeContent:
+            "안녕하세요. 이번 주에는 자바스크립트의 클로저와 콜백 함수에 대해 집중적으로 학습하려 합니다. 모두 함께 열심히 공부해 봅시다. 도움이 필요하면 언제든지 질문해 주세요!",
+        chatArray: [
+            {
+                id: 1,
+                username: "John Doe",
+                type: "text",
+                content: "Hello everyone, how are you?",
+            },
+            {
+                id: 2,
+                username: "Jane Smith",
+                type: "text",
+                content: "I'm good, thanks for asking!",
+            },
+            {
+                id: 3,
+                username: "Alice Johnson",
+                type: "text",
+                content: "Hey guys, what's up?",
+            },
+            {
+                id: 4,
+                username: "John Doe",
+                type: "text",
+                content: "Just working on a project.",
+            },
+            {
+                id: 5,
+                username: "Jane Smith",
+                type: "text",
+                content: "Same here, it's pretty tough.",
+            },
+            {
+                id: 6,
+                username: "Alice Johnson",
+                type: "text",
+                content: "I feel you. Let's hang in there!",
+            },
+            {
+                id: 7,
+                username: "John Doe",
+                type: "text",
+                content: "Definitely. We got this!",
+            },
+            {
+                id: 8,
+                username: "Jane Smith",
+                type: "text",
+                content: "Absolutely! Let's do our best!",
+            },
+            {
+                id: 9,
+                username: "Alice Johnson",
+                type: "text",
+                content: "100% agree. Let's crush it!",
+            },
+            {
+                id: 10,
+                username: "John Doe",
+                type: "text",
+                content: "Yes, let's! :)",
+            },
+            {
+                id: 11,
+                username: "John Doe",
+                type: "text",
+                content:
+                    "This is a longer message for testing purposes. We are trying to see how this message will look in the chat box. Hopefully, it wraps correctly and looks good.",
+            },
+        ],
+        chatRooms: [
+            {
+                id: 1,
+                name: "일반",
+                type: "normal",
+                members: ["John Doe", "Jane Smith", "Alice Johnson"],
+            },
+            {
+                id: 2,
+                name: "Java 공부",
+                type: "normal",
+                members: ["John Doe", "Bob Parker"],
+            },
+            {
+                id: 3,
+                name: "리액트 공부",
+                type: "normal",
+                members: ["Alice Johnson", "Charlie Davis"],
+            },
+            {
+                id: 4,
+                name: "강의",
+                type: "screen",
+                members: ["Jane Smith", "Charlie Davis", "Bob Parker"],
+            },
+            {
+                id: 5,
+                name: "잡담",
+                type: "microphone",
+                members: ["John Doe", "Jane Smith", "Alice Johnson"],
+            },
+        ],
+    };
     const [isOpen, setIsOpen] = useState(false);
     const toggleOpen = () => setIsOpen(!isOpen);
     const [selectedRoomId, setSelectedRoomId] = useState(null);
@@ -146,14 +252,14 @@ const GroupMainPageComponent = (props) => {
                         <NoticeIcon onClick={toggleOpen}>
                             <FaBell size={20} />
                             <NoticeTitle>{title}</NoticeTitle>
-                            {isOpen && (
-                                <NoticeBubble>
-                                    <NoticeContent>{content}</NoticeContent>
-                                </NoticeBubble>
-                            )}
                         </NoticeIcon>
                     </ChatRoomHeader>
                     <ChatWindow>
+                        {isOpen && (
+                            <NoticeBubble>
+                                <NoticeContent>{content}</NoticeContent>
+                            </NoticeBubble>
+                        )}
                         {chatData.map((message, index) => (
                             <ChatMessage
                                 key={index}
@@ -289,6 +395,7 @@ const SidebarSection = styled.div`
 const ChatWindow = styled.div`
     flex: 1;
     display: flex;
+    position: relative;
     flex-direction: column;
     padding: 20px;
     overflow-y: auto;
@@ -483,9 +590,7 @@ const NoticeIcon = styled.div`
 
 const NoticeBubble = styled.div`
     position: absolute;
-    top: 0; // Adjust this value to properly position the bubble
-    left: 0; // Adjust this value to properly position the bubble
-    width: 300px; // Or any width you prefer
+    width: 80%;
     padding: 10px;
     border-radius: 5px;
     background-color: #fff;
