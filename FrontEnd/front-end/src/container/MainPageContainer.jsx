@@ -7,8 +7,12 @@ const MainPageContainer = () => {
     const onNavigateQuestionList = () => {
         navigate("/QuestionList");
     };
+
+    const onNavigateGroupList = () => {
+        navigate("/GroupList");
+    };
     useEffect(() => {}, []);
-    const propDatas = { onNavigateQuestionList };
+    const propDatas = { onNavigateQuestionList, onNavigateGroupList };
     return <MainPageComponent {...propDatas} />;
 };
 

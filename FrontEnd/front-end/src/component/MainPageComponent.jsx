@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 
 const MainPageComponent = (props) => {
-    const { onNavigateQuestionList } = props;
+    const { onNavigateQuestionList, onNavigateGroupList } = props;
     return (
         <MainPageComponentBlock>
             <div className="search-container">
@@ -47,7 +47,9 @@ const MainPageComponent = (props) => {
                         모임에 참여해서 다른사람들과 깊게 토론하고, 실시간 음성
                         및 텍스트 채팅을 할 수 있어요.
                     </p>
-                    <button className="go-button">바로가기</button>
+                    <button className="go-button" onClick={onNavigateGroupList}>
+                        바로가기
+                    </button>
                 </div>
             </div>
         </MainPageComponentBlock>

@@ -3,19 +3,8 @@ import ReactQuill from "react-quill";
 import styled from "styled-components";
 
 const GroupPostCreatePageComponent = (props) => {
-    const {} = props;
+    const { modules } = props;
 
-    const modules = {
-        toolbar: [
-            ["bold", "italic", "underline", "strike"],
-            ["blockquote", "code-block"],
-            [{ list: "ordered" }, { list: "bullet" }],
-            [{ header: [1, 2, 3, 4, 5, 6, false] }],
-            [{ color: [] }, { background: [] }],
-            ["link", "image"],
-            ["clean"],
-        ],
-    };
     return (
         <GroupPostCreatePageComponentBlock>
             <h2 style={{ marginBottom: "40px" }}>게시글 작성</h2>
@@ -41,7 +30,14 @@ const GroupPostCreatePageComponent = (props) => {
                     marginTop: "50px",
                 }}
             >
-                <button>업로드</button>
+                <button
+                    onClick={() => {
+                        // 업로드 로직 구현 (따로 이벤트 함수 빼두는 게 좋음. 지금은 임시 처리)
+                        window.history.back();
+                    }}
+                >
+                    업로드
+                </button>
             </div>
         </GroupPostCreatePageComponentBlock>
     );

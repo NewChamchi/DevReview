@@ -46,13 +46,13 @@ const Switch = () => {
             <Route path="/myProfile" element={<MyProfilePage />} />
             <Route path="/changePassword" element={<ChangePasswordPage />} />
             <Route path="/groupList" element={<GroupListPage />} />
-            <Route path="/groupMain" element={<GroupMainPage />} />
+            <Route path="/groupMain/:id" element={<GroupMainPage />} />
             <Route path="/groupPostList/:id" element={<GroupPostListPage />} />
-            <Route path="/groupPostCreate" element={<GroupPostCreatePage />} />
+            <Route path="/groupCreatePost" element={<GroupPostCreatePage />} />
             <Route path="/groupPost/:id" element={<GroupPostPage />} />
-            <Route path="/groupExile" element={<GroupExilePage />} />
+            <Route path="/groupExile/:id" element={<GroupExilePage />} />
             <Route path="/groupCreate" element={<GroupCreatePage />} />
-            <Route path="/groupManage" element={<GroupManagePage />} />
+            <Route path="/groupManage/:id" element={<GroupManagePage />} />
             <Route path="*" element={<NotFoundError />} />
         </Routes>
     );

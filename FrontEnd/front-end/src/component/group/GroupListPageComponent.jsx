@@ -3,163 +3,26 @@ import styled, { keyframes } from "styled-components";
 import Modal from "react-modal";
 import { MdKeyboardArrowRight, MdKeyboardArrowDown } from "react-icons/md";
 
-const ModalContent = styled.div`
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    padding: 20px;
-    height: 100%;
-    overflow-y: auto; /* 컨텐츠가 너무 많을 경우 스크롤이 생기도록 설정 */
-    ::-webkit-scrollbar {
-        width: 10px;
-    }
-    ::-webkit-scrollbar-track {
-        background: #f1f1f1;
-    }
-    ::-webkit-scrollbar-thumb {
-        background: #888;
-    }
-    ::-webkit-scrollbar-thumb:hover {
-        background: #555;
-    }
-    scrollbar-width: thin;
-    scrollbar-color: #888 #f1f1f1;
-    h3,
-    p {
-        margin: 10px;
-    }
-    .list-button {
-        display: flex;
-        align-items: center;
-        justify-content: space-between; // space-between을 이용해 왼쪽과 오른쪽에 요소들이 분포하도록 조정
-        width: 100%; // 버튼이 모달 창 양옆으로 꽉 차도록 조정
-        background: #f0f0f0;
-        border: none;
-        padding: 10px;
-        margin-top: 15px;
-        cursor: pointer;
-        border-radius: 5px;
-        .button-label {
-            margin: 0;
-        }
-        .icon {
-            transition: transform 0.3s ease;
-            &.down {
-                transform: rotate(90deg);
-            }
-        }
-    }
-    .list {
-        margin-top: 15px;
-        background: #f8f8f8;
-        padding: 10px;
-        border-radius: 5px;
-    }
-
-    .post-list {
-        list-style-type: none;
-        padding: 0;
-    }
-
-    .post-list-item {
-        display: flex;
-        justify-content: space-between;
-        border-bottom: 1px solid #eee;
-        padding: 10px 0;
-    }
-
-    .post-title {
-        margin: 0;
-        font-weight: bold;
-    }
-
-    .post-author {
-        margin: 0;
-        color: #888;
-    }
-    .join-button {
-        width: 100%;
-        padding: 10px;
-        background-color: #007bff;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        transition: background-color 0.2s;
-        &:hover {
-            background-color: #0056b3;
-        }
-        margin-top: 10px;
-    }
-
-    .close-button {
-        width: 100%;
-        padding: 10px;
-        background-color: #dc3545;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        transition: background-color 0.2s;
-        &:hover {
-            background-color: #c82333;
-        }
-        margin-top: 10px;
-    }
-`;
-
 const GroupListPageComponent = (props) => {
-    const {} = props;
-    // 임시 테스트용
-    const groupArray = [
-        "알고리즘 스터디",
-        "웹 개발 모임",
-        "데이터 분석 모임",
-        "인공지능 모임",
-        "시스템 프로그래밍 모임",
-        "데이터베이스 스터디",
-        "네트워크 공부모임",
-        "블록체인 기술 모임",
-    ];
-
-    const dummyMembers = [
-        { id: 1, name: "이정민" },
-        { id: 2, name: "김유진" },
-        { id: 3, name: "박지호" },
-        // 추가적인 회원들...
-    ];
-
-    const dummyPosts = [
-        { id: 1, title: "다익스트라 알고리즘에 대한 논의", author: "이정민" },
-        {
-            id: 2,
-            title: "React와 Vue, 어떤 프레임워크가 나을까?",
-            author: "김유진",
-        },
-        { id: 3, title: "데이터 정규화의 중요성", author: "박지호" },
-        // 추가적인 게시글들...
-    ];
-
-    const questionListPageCount = 5;
-    const [modalIsOpen, setIsOpen] = useState(false);
-    const [showMemberList, setShowMemberList] = useState(false);
-    const [showPostList, setShowPostList] = useState(false);
-
-    function openModal() {
-        setIsOpen(true);
-    }
-
-    function closeModal() {
-        setIsOpen(false);
-        setShowMemberList(false);
-        setShowPostList(false);
-    }
-
-    const joinGroup = () => {
-        window.confirm("모임 가입 신청을 하시겠습니까?");
-        // 모임 가입 로직 처리
-        console.log("Group joined!");
-    };
+    const {
+        groupListData,
+        isModalOpen,
+        showMemberList,
+        showPostList,
+        modalGroupDataId,
+        myId,
+        setGroupListData,
+        setIsModalOpen,
+        setShowMemberList,
+        setShowPostList,
+        setModalGroupDataId,
+        onOpenModal,
+        onCloseModal,
+        onJoinGroup,
+        onLeaveGroup,
+        onGetIntoGroup,
+        onCreateNewGroup,
+    } = props;
     return (
         <GroupListPageComponentBlock>
             <div className="search-container">
@@ -174,21 +37,25 @@ const GroupListPageComponent = (props) => {
             <h2>모임 목록</h2>
             <div className="container">
                 <div className="row">
-                    {groupArray.map((group, index) => (
-                        <div key={index} className="col-sm-3">
-                            <div className="box" onClick={openModal}>
-                                <h3 className="group-title">
-                                    모임명 {index + 1}
-                                </h3>
-                                <p className="group-description">
-                                    이것은 모임 {index + 1}의 설명입니다.
-                                </p>
+                    {groupListData.groupArray &&
+                        groupListData.groupArray.map((group, index) => (
+                            <div key={index} className="col-sm-3">
+                                <div
+                                    className="box"
+                                    onClick={() => onOpenModal(group.id)}
+                                >
+                                    <h5 className="group-title">
+                                        {group.name}
+                                    </h5>
+                                    <p className="group-description">
+                                        {group.description}
+                                    </p>
+                                </div>
                             </div>
-                        </div>
-                    ))}
+                        ))}
                     <Modal
-                        isOpen={modalIsOpen}
-                        onRequestClose={closeModal}
+                        isOpen={isModalOpen}
+                        onRequestClose={onCloseModal}
                         contentLabel="Group Modal"
                         style={{
                             content: {
@@ -203,99 +70,169 @@ const GroupListPageComponent = (props) => {
                             },
                         }}
                     >
-                        <ModalContent>
-                            <div
-                                style={{
-                                    minHeight: "50%",
-                                }}
-                            >
-                                <h3 className="group-title">모임명 2</h3>
-                                <p className="group-description">
-                                    이것은 모임2의 설명입니다.
-                                </p>
-                            </div>
-                            <div>
-                                <button
-                                    className="list-button"
-                                    onClick={() =>
-                                        setShowMemberList(!showMemberList)
-                                    }
-                                >
-                                    <p className="button-label">
-                                        모임 회원 정보
-                                    </p>
-                                    {showMemberList ? (
-                                        <MdKeyboardArrowDown className="icon" />
-                                    ) : (
-                                        <MdKeyboardArrowRight className="icon" />
-                                    )}
-                                </button>
-                                {showMemberList && (
-                                    <div className="list">
-                                        {dummyMembers.map((member) => (
-                                            <p key={member.id}>{member.name}</p>
-                                        ))}
-                                    </div>
-                                )}
-
-                                <button
-                                    className="list-button"
-                                    onClick={() =>
-                                        setShowPostList(!showPostList)
-                                    }
-                                >
-                                    <p className="button-label">
-                                        모임 게시글 보기
-                                    </p>
-                                    {showPostList ? (
-                                        <MdKeyboardArrowDown className="icon" />
-                                    ) : (
-                                        <MdKeyboardArrowRight className="icon" />
-                                    )}
-                                </button>
-                                {showPostList && (
-                                    <div className="list">
-                                        {dummyPosts.map((post) => (
-                                            <div
-                                                key={post.id}
-                                                className="post-list-item"
-                                            >
-                                                <h6 className="post-title">
-                                                    {post.title}
-                                                </h6>
-                                                <p className="post-author">
-                                                    {post.author}
+                        {groupListData.groupArray &&
+                            groupListData.groupArray?.map((group) => {
+                                if (group.id === modalGroupDataId) {
+                                    return (
+                                        <ModalContent key={group.id}>
+                                            <div style={{ minHeight: "30%" }}>
+                                                <h3 className="group-title">
+                                                    {group.name}
+                                                </h3>
+                                                <p className="group-description">
+                                                    {group.description}
                                                 </p>
                                             </div>
-                                        ))}
-                                    </div>
-                                )}
-                                {/* 가입 여부에 따라서 모임 가입 신청 - 모임 탈퇴 신청으로 바뀌어야함 */}
-                                <button
-                                    onClick={true ? joinGroup : joinGroup}
-                                    className="join-button"
-                                >
-                                    {true ? "모임 가입 신청" : "모임 탈퇴 신청"}
-                                </button>
-                                <button
-                                    onClick={closeModal}
-                                    className="close-button"
-                                >
-                                    닫기
-                                </button>
-                            </div>
-                        </ModalContent>
+                                            <div>
+                                                <button
+                                                    className="list-button"
+                                                    onClick={() =>
+                                                        setShowMemberList(
+                                                            !showMemberList
+                                                        )
+                                                    }
+                                                >
+                                                    <p className="button-label">
+                                                        모임 회원 정보
+                                                    </p>
+                                                    {showMemberList ? (
+                                                        <MdKeyboardArrowDown className="icon" />
+                                                    ) : (
+                                                        <MdKeyboardArrowRight className="icon" />
+                                                    )}
+                                                </button>
+                                                {showMemberList &&
+                                                    group.members.map(
+                                                        (member) => (
+                                                            <p
+                                                                style={{
+                                                                    textAlign:
+                                                                        "center",
+                                                                }}
+                                                                key={member.id}
+                                                            >
+                                                                {member.name}
+                                                            </p>
+                                                        )
+                                                    )}
+
+                                                <button
+                                                    className="list-button"
+                                                    onClick={() =>
+                                                        setShowPostList(
+                                                            !showPostList
+                                                        )
+                                                    }
+                                                >
+                                                    <p className="button-label">
+                                                        모임 게시글 보기
+                                                    </p>
+                                                    {showPostList ? (
+                                                        <MdKeyboardArrowDown className="icon" />
+                                                    ) : (
+                                                        <MdKeyboardArrowRight className="icon" />
+                                                    )}
+                                                </button>
+                                                {showPostList &&
+                                                    group.posts.map((post) => (
+                                                        <div
+                                                            key={post.id}
+                                                            className="post-list-item"
+                                                        >
+                                                            <h6
+                                                                className="post-title"
+                                                                onClick={() => {
+                                                                    console.log(
+                                                                        "post clicked!",
+                                                                        post.id
+                                                                    );
+                                                                }}
+                                                            >
+                                                                {post.title}
+                                                            </h6>
+                                                            <p className="post-author">
+                                                                {post.author}
+                                                            </p>
+                                                        </div>
+                                                    ))}
+
+                                                {group.members.some(
+                                                    (member) =>
+                                                        member.id === myId
+                                                ) ? (
+                                                    <button
+                                                        className="enter-button"
+                                                        onClick={() => {
+                                                            onGetIntoGroup(
+                                                                group.id
+                                                            );
+                                                        }}
+                                                    >
+                                                        모임 들어가기
+                                                    </button>
+                                                ) : null}
+
+                                                {group.members.some(
+                                                    (member) =>
+                                                        member.id === myId
+                                                ) ? (
+                                                    <button
+                                                        className="leave-button"
+                                                        onClick={() =>
+                                                            onLeaveGroup(
+                                                                group.id,
+                                                                myId
+                                                            )
+                                                        }
+                                                    >
+                                                        모임 탈퇴 신청
+                                                    </button>
+                                                ) : (
+                                                    <button
+                                                        className="join-button"
+                                                        onClick={() => {
+                                                            onJoinGroup(
+                                                                group.id,
+                                                                myId
+                                                            );
+                                                        }}
+                                                    >
+                                                        모임 가입 신청
+                                                    </button>
+                                                )}
+
+                                                <button
+                                                    onClick={onCloseModal}
+                                                    className="close-button"
+                                                >
+                                                    닫기
+                                                </button>
+                                            </div>
+                                        </ModalContent>
+                                    );
+                                }
+                                return null;
+                            })}
                     </Modal>
                 </div>
             </div>
             <div className="pagination">
-                {Array.from({ length: questionListPageCount }, (_, i) => (
-                    <span key={i} className="page-item">
+                {Array.from({ length: groupListData.pageCount }, (_, i) => (
+                    <span
+                        key={i}
+                        className={`page-item ${
+                            groupListData.currentPage === i + 1
+                                ? "page-item-active"
+                                : ""
+                        }`}
+                    >
                         {i + 1}
                     </span>
                 ))}
             </div>
-            <button className="create-button">모임 작성</button>
+            <button className="create-button" onClick={onCreateNewGroup}>
+                모임 작성
+            </button>
         </GroupListPageComponentBlock>
     );
 };
@@ -370,6 +307,9 @@ const GroupListPageComponentBlock = styled.div`
             color: #007bff;
         }
     }
+    .page-item-active {
+        color: #007bff;
+    }
     .create-button {
         width: 150px;
         margin-bottom: 50px;
@@ -387,5 +327,160 @@ const GroupListPageComponentBlock = styled.div`
             background-color: #0056b3;
         }
     }
+    .group-title {
+        font-size: 1em; /* 폰트 크기 조정 */
+        font-weight: bold; /* 폰트 굵기 조정 */
+        margin-bottom: 5px; /* 마진 조정 */
+    }
+
+    .group-description {
+        font-size: 0.8em; /* 폰트 크기 조정 */
+        color: #666; /* 색상 조정 */
+        text-align: left;
+        border-top: 1px solid #ddd; /* 가로선 추가 */
+        padding-top: 10px; /* 패딩 추가 */
+    }
 `;
+
+const ModalContent = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 20px;
+    height: 100%;
+    overflow-y: auto; /* 컨텐츠가 너무 많을 경우 스크롤이 생기도록 설정 */
+    ::-webkit-scrollbar {
+        width: 10px;
+    }
+    ::-webkit-scrollbar-track {
+        background: #f1f1f1;
+    }
+    ::-webkit-scrollbar-thumb {
+        background: #888;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+        background: #555;
+    }
+    scrollbar-width: thin;
+    scrollbar-color: #888 #f1f1f1;
+    h3,
+    p {
+        margin: 10px;
+    }
+    .list-button {
+        display: flex;
+        align-items: center;
+        justify-content: space-between; // space-between을 이용해 왼쪽과 오른쪽에 요소들이 분포하도록 조정
+        width: 100%; // 버튼이 모달 창 양옆으로 꽉 차도록 조정
+        background: #f0f0f0;
+        border: none;
+        padding: 10px;
+        margin-top: 15px;
+        cursor: pointer;
+        border-radius: 5px;
+        .button-label {
+            margin: 0;
+        }
+        .icon {
+            transition: transform 0.3s ease;
+            &.down {
+                transform: rotate(90deg);
+            }
+        }
+    }
+    .list {
+        margin-top: 15px;
+        background: #f8f8f8;
+        padding: 10px;
+        border-radius: 5px;
+    }
+
+    .post-list {
+        list-style-type: none;
+        padding: 0;
+    }
+
+    .post-list-item {
+        display: flex;
+        margin-top: 15px;
+        justify-content: space-between;
+        border-bottom: 1px solid #eee;
+        padding: 10px;
+    }
+
+    .post-title {
+        margin: 0;
+        font-weight: bold;
+        transition: color 0.2s;
+        &:hover {
+            color: #007bff;
+            cursor: pointer;
+        }
+    }
+
+    .post-author {
+        margin: 0;
+        color: #888;
+    }
+    .join-button {
+        width: 100%;
+        padding: 10px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.2s;
+        &:hover {
+            background-color: #0056b3;
+        }
+        margin-top: 10px;
+    }
+
+    .enter-button {
+        width: 100%;
+        padding: 10px;
+        background-color: #28a745;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.2s;
+        &:hover {
+            background-color: #1e7e34;
+        }
+        margin-top: 10px;
+    }
+
+    .leave-button {
+        width: 100%;
+        padding: 10px;
+        background-color: #ffc107;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.2s;
+        &:hover {
+            background-color: #d39e00;
+        }
+        margin-top: 10px;
+    }
+
+    .close-button {
+        width: 100%;
+        padding: 10px;
+        background-color: #dc3545;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.2s;
+        &:hover {
+            background-color: #c82333;
+        }
+        margin-top: 10px;
+    }
+`;
+
 export default GroupListPageComponent;
