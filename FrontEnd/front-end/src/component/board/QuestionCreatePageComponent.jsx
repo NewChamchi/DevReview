@@ -11,6 +11,7 @@ const QuestionCreatePageComponent = (props) => {
         inputValue,
         isChatGPTUsing,
         setIsChatGPTUsing,
+        onTitleChange,
         onEditorChange,
         onTagChange,
         onTagEnter,
@@ -31,6 +32,7 @@ const QuestionCreatePageComponent = (props) => {
                     type="text"
                     placeholder="제목을 입력하세요."
                     style={{ marginRight: "10px", width: "50%" }}
+                    onChange={onTitleChange}
                 />
                 <input
                     type="checkbox"
