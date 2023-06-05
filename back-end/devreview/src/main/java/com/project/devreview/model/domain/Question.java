@@ -22,7 +22,7 @@ public class Question {
     @Column(name = "ques_title")
     private String title;
 
-    @Column(name = "ques_content")
+    @Column(name = "ques_content", length = 1000)
     private String content;
 
     @Column(name = "ques_time")

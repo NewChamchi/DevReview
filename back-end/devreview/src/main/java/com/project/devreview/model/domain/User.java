@@ -1,6 +1,5 @@
 package com.project.devreview.model.domain;
 
-import com.project.devreview.model.dto.UserDTO;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -45,7 +44,7 @@ public class User {
     private List<Comment> comments = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<UserGroup> userGroupList = new ArrayList<>();
+    private List<UserTeam> userTeamList = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Chatting> chattingList = new ArrayList<>();
