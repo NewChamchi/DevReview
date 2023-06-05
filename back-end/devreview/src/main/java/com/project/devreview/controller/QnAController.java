@@ -116,7 +116,7 @@ public class QnAController {
         System.out.println(map);
         UserDTO finduser = userService.findUserByName(map.get("author").toString());
         QuestionDTO questionDTO = new QuestionDTO(
-                map.get("title").toString(),map.get("content").toString(), (LocalDateTime) map.get("date"),0,finduser
+                map.get("title").toString(),map.get("content").toString(), LocalDateTime.now(),0,finduser
         );
         System.out.println("title : "+map.get("title"));
         System.out.println("content: "+map.get("content"));

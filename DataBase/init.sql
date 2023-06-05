@@ -26,7 +26,7 @@ CREATE TABLE `answer` (
   `ans_id` int(11) NOT NULL AUTO_INCREMENT,
   `ques_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
-  `ans_content` varchar(45) NOT NULL,
+  `ans_content` text NOT NULL,
   `ans_is_auto` tinyint(4) DEFAULT NULL,
   `ans_time` datetime DEFAULT NULL,
   PRIMARY KEY (`ans_id`),
@@ -43,7 +43,6 @@ CREATE TABLE `answer` (
 
 LOCK TABLES `answer` WRITE;
 /*!40000 ALTER TABLE `answer` DISABLE KEYS */;
-INSERT INTO `answer` VALUES (1,1,1,'answerishere',0,'2023-05-25 03:34:12');
 /*!40000 ALTER TABLE `answer` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -85,7 +84,7 @@ DROP TABLE IF EXISTS `chatting`;
 CREATE TABLE `chatting` (
   `chat_id` int(11) NOT NULL AUTO_INCREMENT,
   `group_id` int(11) NOT NULL,
-  `chat_content` varchar(45) NOT NULL,
+  `chat_content` varchar(10000) NOT NULL,
   `chat_time` datetime NOT NULL,
   `chat_type` int(11) DEFAULT NULL,
   `user_id` int(11) NOT NULL,
@@ -118,7 +117,7 @@ DROP TABLE IF EXISTS `comment`;
  SET character_set_client = utf8mb4 ;
 CREATE TABLE `comment` (
   `comment_id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `comment_content` varchar(255) DEFAULT NULL,
+  `comment_content` text,
   `comment_time` datetime(6) DEFAULT NULL,
   `ans_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
@@ -149,7 +148,7 @@ DROP TABLE IF EXISTS `group`;
 CREATE TABLE `group` (
   `group_id` int(11) NOT NULL AUTO_INCREMENT,
   `group_name` varchar(45) NOT NULL,
-  `group_intro` varchar(45) DEFAULT NULL,
+  `group_intro` varchar(1000) DEFAULT NULL,
   PRIMARY KEY (`group_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -173,8 +172,8 @@ DROP TABLE IF EXISTS `notice`;
 CREATE TABLE `notice` (
   `notice_id` int(11) NOT NULL AUTO_INCREMENT,
   `group_id` int(11) NOT NULL,
-  `notice_title` varchar(45) NOT NULL,
-  `notice_content` varchar(45) NOT NULL,
+  `notice_title` varchar(255) NOT NULL,
+  `notice_content` text NOT NULL,
   `notice_time` datetime DEFAULT NULL,
   PRIMARY KEY (`notice_id`),
   KEY `group_id_idx` (`group_id`),
@@ -200,8 +199,8 @@ DROP TABLE IF EXISTS `post`;
  SET character_set_client = utf8mb4 ;
 CREATE TABLE `post` (
   `post_id` int(11) NOT NULL AUTO_INCREMENT,
-  `post_title` varchar(45) NOT NULL,
-  `post_content` varchar(45) NOT NULL,
+  `post_title` varchar(255) NOT NULL,
+  `post_content` text NOT NULL,
   `group_id` int(11) NOT NULL,
   `post_time` datetime DEFAULT NULL,
   PRIMARY KEY (`post_id`),
@@ -257,15 +256,15 @@ DROP TABLE IF EXISTS `question`;
  SET character_set_client = utf8mb4 ;
 CREATE TABLE `question` (
   `ques_id` int(11) NOT NULL AUTO_INCREMENT,
-  `ques_title` varchar(45) NOT NULL,
+  `ques_title` varchar(255) NOT NULL,
   `user_id` int(11) NOT NULL,
-  `ques_content` varchar(45) NOT NULL,
+  `ques_content` text NOT NULL,
   `ques_time` datetime DEFAULT NULL,
   `ques_hit` int(11) NOT NULL,
   PRIMARY KEY (`ques_id`),
   KEY `user_id_idx` (`user_id`),
   CONSTRAINT `user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -274,7 +273,7 @@ CREATE TABLE `question` (
 
 LOCK TABLES `question` WRITE;
 /*!40000 ALTER TABLE `question` DISABLE KEYS */;
-INSERT INTO `question` VALUES (1,'newpost',1,'newcontent','2023-05-25 03:33:38',2);
+INSERT INTO `question` VALUES (2,'newpost',1,'newcontent','2023-06-01 16:53:19',0),(3,'React에서 상태 관리 라이브러리 사용 방법',2,'<p>안녕하세요! React 프로젝트를 진행하면서 상태 관리 라이브러리를 사용하려고 합니다.</p><p>Redux와 MobX 중 어떤 것을 사용하는 것이 좋을까요? 각 라이브러리의 장단점에 대해 알려주시면 감사하겠습니다.</p><p>또한, 선택한 라이브러리를 React 프로젝트에 통합하는 방법에 대해서도 조언을 구하고 싶습니다.</p><p>감사합니다!</p>','2023-06-05 07:41:58',0);
 /*!40000 ALTER TABLE `question` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -303,7 +302,6 @@ CREATE TABLE `question_tag` (
 
 LOCK TABLES `question_tag` WRITE;
 /*!40000 ALTER TABLE `question_tag` DISABLE KEYS */;
-INSERT INTO `question_tag` VALUES (1,1,1);
 /*!40000 ALTER TABLE `question_tag` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -347,7 +345,7 @@ CREATE TABLE `user` (
   `user_login_id` varchar(45) NOT NULL,
   `user_password` varchar(45) NOT NULL,
   PRIMARY KEY (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -356,7 +354,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,'kim','kim@gmail.com',1,1,'kim01','kimkim');
+INSERT INTO `user` VALUES (1,'kim','kim@gmail.com',1,1,'kim01','kimkim'),(2,'lee','lee@email',0,0,'lee','asdf');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -398,4 +396,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-05-26 22:38:01
+-- Dump completed on 2023-06-05 21:44:57

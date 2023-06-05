@@ -1,6 +1,7 @@
 package com.project.devreview.model.domain;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,9 +9,9 @@ import lombok.NoArgsConstructor;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity(name = "Group")
+@Entity(name = "`Group`")
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Team {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,7 +25,7 @@ public class Team {
     private String intro;
 
     @OneToMany(mappedBy = "team", cascade = CascadeType.ALL)
-    private List<UserGroup> userGroupList = new ArrayList<>();
+    private List<UserTeam> userTeamList = new ArrayList<>();
 
     @OneToMany(mappedBy = "team", cascade = CascadeType.ALL)
     private List<Notice> notices = new ArrayList<>();

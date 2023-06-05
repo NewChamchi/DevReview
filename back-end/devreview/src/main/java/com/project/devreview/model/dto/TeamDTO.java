@@ -4,6 +4,7 @@ import com.project.devreview.model.domain.Question;
 import com.project.devreview.model.domain.Team;
 import lombok.Builder;
 import lombok.Data;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -42,5 +43,11 @@ public class TeamDTO {
     public static List<TeamDTO> listEntityToDto(List<Team> teams){
         return teams.stream()
                 .map(TeamDTO::toDto).collect(Collectors.toList());
+    }
+    public static Page<TeamDTO> toPageDtoList(Page<Team> teamList) {
+        Page<TeamDTO> teamDtoList = teamList.map(m ->
+                toDto(m)
+        );
+        return teamDtoList;
     }
 }
