@@ -111,6 +111,50 @@ public class QnAController {
         return new ResponseEntity<>(response.toMap(), HttpStatus.OK);
     }
 
+    @GetMapping("/question/detail/chatgpt/{ques_id}")
+    @ResponseBody
+    public ResponseEntity<Object> readQuestionAnsweredChatGPT(@PathVariable("ques_id") Long ques_id){
+        JSONObject response = new JSONObject();
+
+        QuestionDTO questionDTO = questionService.readQues(ques_id);
+
+        List<AnswerDTO> answers = questionService.readAnswers(ques_id);
+        JSONArray answerjsons = new JSONArray();
+        JSONObject questioninfo = new JSONObject();
+        questioninfo.put("id",questionDTO.getId());
+        questioninfo.put("title",questionDTO.getTitle());
+        questioninfo.put("author",questionDTO.getUserDTO().getName());
+        questioninfo.put("date",questionDTO.getTime());
+        questioninfo.put("tags",quesTagService.findTagByQues(questionService.readQues(ques_id)));
+        questioninfo.put("content",questionDTO.getContent());
+        for(AnswerDTO answerDTO:answers){
+            JSONObject ananswer = new JSONObject();
+            ananswer.put("id",answerDTO.getId());
+            ananswer.put("content",answerDTO.getContent());
+            ananswer.put("author","ChatGPT");
+            ananswer.put("date",answerDTO.getDatetime());
+            List<CommentDTO> comments = commentService.readCommentsByAnswer(answerDTO.getId());
+            JSONArray jsoncomments = new JSONArray();
+            for(CommentDTO commentDTO:comments){
+                JSONObject acomment = new JSONObject();
+                acomment.put("id",commentDTO.getId());
+                acomment.put("content",commentDTO.getContent());
+                acomment.put("author",commentDTO.getUserDTO().getName());
+                acomment.put("date",commentDTO.getDatetime());
+                jsoncomments.put(acomment);
+            }
+            ananswer.put("comments",jsoncomments);
+            answerjsons.put(ananswer);
+        }
+        response.put("questionData",questioninfo);
+        response.put("AnswerData",answerjsons);
+        questionService.updateHit(ques_id);
+
+
+        return new ResponseEntity<>(response.toMap(), HttpStatus.OK);
+    }
+
+
     //api 연결 ok
     @PostMapping("/question/create")
     @ResponseBody
