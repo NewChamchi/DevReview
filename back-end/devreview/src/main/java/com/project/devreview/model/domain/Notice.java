@@ -1,6 +1,7 @@
 package com.project.devreview.model.domain;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -24,7 +25,19 @@ public class Notice {
     @Column(name = "notice_time")
     private LocalDateTime datetime;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "group_id")
-    private Team team;
+
+
+    @Builder
+    public Notice(Long id, String title, String content, LocalDateTime datetime){
+        this.id= id;
+        this.title = title;
+        this.content = content;
+        this.datetime = datetime;
+    }
+    @Builder
+    public Notice(String title, String content, LocalDateTime datetime){
+        this.title = title;
+        this.content = content;
+        this.datetime = datetime;
+    }
 }

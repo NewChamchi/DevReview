@@ -26,7 +26,6 @@ class AnswerServiceImplTest {
         answerService.registerAnswer(AnswerDTO.builder()
                 .content("answerishere")
                 .datetime(LocalDateTime.now())
-                .isAuto(false)
                 .userDTO(questionDTO.getUserDTO())
                 .questionDTO(questionDTO).build());
     }

@@ -19,9 +19,6 @@ public class Answer {
     @Column(name = "ans_content")
     private String content;
 
-    @Column(name="ans_is_auto")
-    private boolean isAuto;
-
     @Column(name = "ans_time")
     private LocalDateTime datetime;
 
@@ -37,10 +34,9 @@ public class Answer {
     private List<Comment> comments = new ArrayList<>();
 
     @Builder
-    public Answer(Long id, String content, boolean isAuto, LocalDateTime datetime, User user, Question question){
+    public Answer(Long id, String content, LocalDateTime datetime, User user, Question question){
         this.id = id;
         this.content = content;
-        this.isAuto = isAuto;
         this.datetime = datetime;
         this.user = user;
         this.question = question;

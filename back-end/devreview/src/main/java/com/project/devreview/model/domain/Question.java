@@ -31,6 +31,9 @@ public class Question {
     @Column(name = "ques_hit")
     private int hit;
 
+    @Column(name="type")
+    private Boolean type;
+
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
     @JoinColumn(name = "user_id")
     private User user;
@@ -43,20 +46,22 @@ public class Question {
 
 
     @Builder
-    public Question(Long id, String title, String content, LocalDateTime time, int hit, User user){
+    public Question(Long id, String title, String content, LocalDateTime time, int hit,Boolean type, User user){
         this.id = id;
         this.title=title;
         this.content=content;
         this.time = time;
         this.hit = hit;
+        this.type = type;
         this.user = user;
     }
     @Builder
-    public Question(String title, String content, LocalDateTime time, int hit, User user){
+    public Question(String title, String content, LocalDateTime time, int hit,Boolean type, User user){
         this.title=title;
         this.content=content;
         this.time = time;
         this.hit = hit;
+        this.type = type;
         this.user = user;
     }
 

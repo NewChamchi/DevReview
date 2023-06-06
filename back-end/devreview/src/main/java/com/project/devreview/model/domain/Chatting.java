@@ -1,6 +1,7 @@
 package com.project.devreview.model.domain;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -38,4 +39,25 @@ public class Chatting {
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "file_id")
     private AttachedFile attachedFile;
+
+    @Builder
+    public Chatting(Long id, String content, LocalDateTime datetime, int type, User user, Team team, AttachedFile attachedFile){
+        this.id = id;
+        this.content = content;
+        this.datetime = datetime;
+        this.type = type;
+        this.user = user;
+        this.team = team;
+        this.attachedFile = attachedFile;
+    }
+    @Builder
+    public Chatting(String content, LocalDateTime datetime, int type, User user, Team team, AttachedFile attachedFile){
+        this.content = content;
+        this.datetime = datetime;
+        this.type = type;
+        this.user = user;
+        this.team = team;
+        this.attachedFile = attachedFile;
+    }
+
 }

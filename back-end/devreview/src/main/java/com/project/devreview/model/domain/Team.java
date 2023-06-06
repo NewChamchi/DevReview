@@ -27,25 +27,28 @@ public class Team {
     @OneToMany(mappedBy = "team", cascade = CascadeType.ALL)
     private List<UserTeam> userTeamList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL)
-    private List<Notice> notices = new ArrayList<>();
-
     @OneToMany(mappedBy = "team",cascade = CascadeType.ALL)
     private List<Chatting> chattingList = new ArrayList<>();
 
     @OneToMany(mappedBy = "team", cascade = CascadeType.ALL)
     private List<Post> posts = new ArrayList<>();
 
+    @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @JoinColumn(name = "notice_id")
+    private Notice notice;
+
 
     @Builder
-    public Team(Long id,String name, String intro){
+    public Team(Long id,String name, String intro, Notice notice){
         this.id = id;
         this.name = name;
         this.intro = intro;
+        this.notice = notice;
     }
     @Builder
-    public Team(String name, String intro){
+    public Team(String name, String intro, Notice notice){
         this.name = name;
         this.intro = intro;
+        this.notice = notice;
     }
 }

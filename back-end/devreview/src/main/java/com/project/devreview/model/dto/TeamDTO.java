@@ -14,22 +14,26 @@ public class TeamDTO {
     private Long id;
     private String name;
     private String intro;
+    private NoticeDTO noticeDTO;
 
     @Builder
-    public TeamDTO(String name, String intro){
+    public TeamDTO(String name, String intro, NoticeDTO noticeDTO){
         this.name = name;
         this.intro = intro;
+        this.noticeDTO = noticeDTO;
     }
     @Builder
-    public TeamDTO(Long id,String name, String intro){
+    public TeamDTO(Long id,String name, String intro, NoticeDTO noticeDTO){
         this.id = id;
         this.name = name;
         this.intro = intro;
+        this.noticeDTO = noticeDTO;
     }
     public TeamDTO(Team team){
         this.id = team.getId();
         this.name = team.getName();
         this.intro = team.getIntro();
+        this.noticeDTO = NoticeDTO.toDto(team.getNotice());
     }
 
     public Team toEntity(){
@@ -37,6 +41,7 @@ public class TeamDTO {
                 .id(id)
                 .name(name)
                 .intro(intro)
+                .notice(noticeDTO.toEntity())
                 .build();
     }
     public static TeamDTO toDto(Team team) { return new TeamDTO(team); }
