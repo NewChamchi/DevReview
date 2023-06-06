@@ -17,6 +17,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -111,7 +113,7 @@ public class GroupController {
             post.put("no",postDTO.getId());
             post.put("title",postDTO.getTitle());
             post.put("author",postDTO.getUserDTO().getName());
-            post.put("date",postDTO.getDatetime());
+            post.put("date",postDTO.getDatetime().format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)));
             postarray.put(post);
         }
         result.put("groupPostArray",postarray);
@@ -126,7 +128,7 @@ public class GroupController {
         postjson.put("id",postDTO.getId());
         postjson.put("title",postDTO.getTitle());
         postjson.put("author",postDTO.getUserDTO().getName());
-        postjson.put("date",postDTO.getDatetime());
+        postjson.put("date",postDTO.getDatetime().format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)));
         postjson.put("content",postDTO.getContent());
         return new ResponseEntity<>(postjson.toMap(),HttpStatus.OK);
     }
