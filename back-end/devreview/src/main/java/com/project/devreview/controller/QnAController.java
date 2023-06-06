@@ -13,6 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -54,7 +56,7 @@ public class QnAController {
             questionjson.put("id",questionDTO.getId());
             questionjson.put("title",questionDTO.getTitle());
             questionjson.put("author",questionDTO.getUserDTO().getName());
-            questionjson.put("date",questionDTO.getTime());
+            questionjson.put("date",questionDTO.getTime().format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)));
             if(questionDTO.getType()){
                 questionjson.put("type","chatgpt");
             }else{
@@ -88,7 +90,7 @@ public class QnAController {
         questioninfo.put("id",questionDTO.getId());
         questioninfo.put("title",questionDTO.getTitle());
         questioninfo.put("author",questionDTO.getUserDTO().getName());
-        questioninfo.put("date",questionDTO.getTime());
+        questioninfo.put("date",questionDTO.getTime().format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)));
         questioninfo.put("type","normal");
         List<TagDTO> tagDTOS = quesTagService.findTagByQues(questionService.readQues(ques_id));
         questioninfo.put("tags",MadeFunc.ListTagToString(tagDTOS));
@@ -98,7 +100,7 @@ public class QnAController {
             ananswer.put("id",answerDTO.getId());
             ananswer.put("content",answerDTO.getContent());
             ananswer.put("author",answerDTO.getUserDTO().getName());
-            ananswer.put("date",answerDTO.getDatetime());
+            ananswer.put("date",answerDTO.getDatetime().format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)));
             List<CommentDTO> comments = commentService.readCommentsByAnswer(answerDTO.getId());
             JSONArray jsoncomments = new JSONArray();
             for(CommentDTO commentDTO:comments){
@@ -106,7 +108,7 @@ public class QnAController {
                 acomment.put("id",commentDTO.getId());
                 acomment.put("content",commentDTO.getContent());
                 acomment.put("author",commentDTO.getUserDTO().getName());
-                acomment.put("date",commentDTO.getDatetime());
+                acomment.put("date",commentDTO.getDatetime().format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)));
                 jsoncomments.put(acomment);
             }
             ananswer.put("comments",jsoncomments);
@@ -134,7 +136,7 @@ public class QnAController {
         questioninfo.put("id",questionDTO.getId());
         questioninfo.put("title",questionDTO.getTitle());
         questioninfo.put("author",questionDTO.getUserDTO().getName());
-        questioninfo.put("date",questionDTO.getTime());
+        questioninfo.put("date",questionDTO.getTime().format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)));
         questioninfo.put("type","chatgpt");
         List<TagDTO> tagDTOS = quesTagService.findTagByQues(questionService.readQues(ques_id));
         questioninfo.put("tags",MadeFunc.ListTagToString(tagDTOS));
@@ -144,7 +146,7 @@ public class QnAController {
             ananswer.put("id",answerDTO.getId());
             ananswer.put("content",answerDTO.getContent());
             ananswer.put("author","ChatGPT");
-            ananswer.put("date",answerDTO.getDatetime());
+            ananswer.put("date",answerDTO.getDatetime().format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)));
             List<CommentDTO> comments = commentService.readCommentsByAnswer(answerDTO.getId());
             JSONArray jsoncomments = new JSONArray();
             for(CommentDTO commentDTO:comments){
@@ -152,7 +154,7 @@ public class QnAController {
                 acomment.put("id",commentDTO.getId());
                 acomment.put("content",commentDTO.getContent());
                 acomment.put("author",commentDTO.getUserDTO().getName());
-                acomment.put("date",commentDTO.getDatetime());
+                acomment.put("date",commentDTO.getDatetime().format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)));
                 jsoncomments.put(acomment);
             }
             ananswer.put("comments",jsoncomments);
@@ -209,7 +211,7 @@ public class QnAController {
         JSONObject questionjson = new JSONObject();
         questionjson.put("title",questionDTO.getTitle());
         questionjson.put("author",questionDTO.getUserDTO().getName());
-        questionjson.put("date",questionDTO.getTime());
+        questionjson.put("date",questionDTO.getTime().format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)));
         questionjson.put("tags",MadeFunc.ListTagToString(tagDTOS));
         questionjson.put("content",questionDTO.getContent());
         return new ResponseEntity<>(questionjson.toMap(),HttpStatus.OK);
