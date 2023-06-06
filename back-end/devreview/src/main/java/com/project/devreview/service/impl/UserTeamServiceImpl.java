@@ -44,17 +44,21 @@ public class UserTeamServiceImpl implements UserTeamService {
         List<UserTeam> userTeams = userTeamRepository.findByTeam(teamDTO.toEntity());
         List<UserDTO> userDTOS = new ArrayList<>();
         for(UserTeam userTeam: userTeams){
-            userDTOS.add(UserDTO.toDto(userTeam.getUser()));
+            if(!userTeam.getIsBlock()){
+                userDTOS.add(UserDTO.toDto(userTeam.getUser()));
+            }
         }
         return userDTOS;
     }
 
     @Override
     public List<TeamDTO> readTeamByUser(UserDTO userDTO) {
-        List<UserTeam> teams = userTeamRepository.findByUser(userDTO.toEntity());
+        List<UserTeam> userTeams = userTeamRepository.findByUser(userDTO.toEntity());
         List<TeamDTO> teamDTOS = new ArrayList<>();
-        for(UserTeam team:teams){
-            teamDTOS.add(TeamDTO.toDto(team.getTeam()));
+        for(UserTeam userTeam:userTeams){
+            if(!userTeam.getIsBlock()){
+                teamDTOS.add(TeamDTO.toDto(userTeam.getTeam()));
+            }
         }
         return teamDTOS;
     }

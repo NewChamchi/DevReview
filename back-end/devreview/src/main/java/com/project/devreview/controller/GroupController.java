@@ -1,21 +1,23 @@
 package com.project.devreview.controller;
 
-import com.project.devreview.model.dto.PostDTO;
-import com.project.devreview.model.dto.TeamDTO;
-import com.project.devreview.model.dto.UserDTO;
+import com.project.devreview.model.dto.*;
 import com.project.devreview.service.interf.PostService;
 import com.project.devreview.service.interf.TeamService;
 import com.project.devreview.service.interf.UserService;
 import com.project.devreview.service.interf.UserTeamService;
 import lombok.AllArgsConstructor;
+import org.apache.tomcat.util.json.JSONParser;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.json.JsonParser;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -88,21 +90,47 @@ public class GroupController {
     }*/
 
     @GetMapping("/post/{id}")
-    public PostDTO readPost(@PathVariable(value = "id") Long id){
-        return postService.readPostById(id);
+    public ResponseEntity<Object> readPost(@PathVariable(value = "id") Long id){
+        PostDTO postDTO = postService.readPostById(id);
+        JSONObject postjson = new JSONObject();
+        postjson.put("id",postDTO.getId());
+        postjson.put("title",postDTO.getTitle());
+        postjson.put("author",postDTO.getUserDTO().getName());
+        postjson.put("date",postDTO.getDatetime());
+        postjson.put("content",postDTO.getContent());
+        return new ResponseEntity<>(postjson.toMap(),HttpStatus.OK);
     }
 
     @GetMapping("/manage/{id}")
-    public TeamDTO readGroupManage(@PathVariable(value = "id") Long id)
+    public ResponseEntity<Object> readGroupManage(@PathVariable(value = "id") Long id)
     {
-        return teamService.readTeamById(id);
+        TeamDTO teamDTO = teamService.readTeamById(id);
+        JSONObject teamjson = new JSONObject();
+        teamjson.put("id",teamDTO.getId());
+        teamjson.put("groupName",teamDTO.getName());
+        teamjson.put("groupDescription",teamDTO.getIntro());
+        if(teamDTO.getNoticeDTO()!=null){
+            teamjson.put("groupNoticeTitle",teamDTO.getNoticeDTO().getTitle());
+            teamjson.put("groupNoticeContent",teamDTO.getNoticeDTO().getContent());
+        } else if (teamDTO.getNoticeDTO() == null) {
+            teamjson.put("groupNoticeContent","");
+            teamjson.put("groupNoticeTitle","");
+        }
+        return new ResponseEntity<>(teamjson.toMap(),HttpStatus.OK);
     }
 
     @PutMapping("/manage/update")
     public String updateGroupInfo(@RequestBody Map<String, Object> map){
-        TeamDTO teamDTO = teamService.readTeamById((Long) map.get("id"));
+        TeamDTO teamDTO = teamService.readTeamById(Long.valueOf(map.get("id").toString()));
         teamDTO.setName(map.get("groupName").toString());
         teamDTO.setIntro(map.get("groupDescription").toString());
+        if(!map.get("groupNoticeTitle").equals("")){
+            NoticeDTO noticeDTO = new NoticeDTO(
+                    map.get("groupNoticeTitle").toString(),map.get("groupNoticeContent").toString(),
+                    LocalDateTime.now());
+
+            teamDTO.setNoticeDTO(noticeDTO);
+        }
         teamService.updateTeam(teamDTO);
         return "모임 수정 성공";
     }
@@ -111,17 +139,61 @@ public class GroupController {
     public ResponseEntity<Object> getGroupExile(@PathVariable(value = "id") Long group_id){
         TeamDTO teamDTO = teamService.readTeamById(group_id);
         List<UserDTO> userDTOS = userTeamService.readUserByTeam(teamDTO);
-        return new ResponseEntity<>(userDTOS,HttpStatus.OK);
+        JSONArray jsonArray = new JSONArray();
+        for(UserDTO userDTO:userDTOS){
+            JSONObject userinfo = new JSONObject();
+            userinfo.put("id",userDTO.getId());
+            userinfo.put("name",userDTO.getName());
+            jsonArray.put(userinfo);
+        }
+        return new ResponseEntity<>(jsonArray.toList(),HttpStatus.OK);
     }
 
-/*    @PutMapping("/exile/update")
+    @PutMapping("/exile/update")
     public String exileUser(@RequestBody Map<String,Object> map){
+        TeamDTO teamDTO = teamService.readTeamById(Long.valueOf(map.get("id").toString()));
+        List<UserDTO> userDTOS = userTeamService.readUserByTeam(teamDTO);
+        List<Long> userids = new ArrayList<>();
 
-    }*/
+        JSONObject jsonObject = new JSONObject(map);
+        JSONArray jsonArray = jsonObject.getJSONArray("groupMember");
+        for(int i=0; i<jsonArray.length(); i++){
+            JSONObject temp = (JSONObject) jsonArray.opt(i);
+            Long id = Long.valueOf(temp.get("id").toString());
+            userids.add(id);
+        }
+        for(UserDTO userDTO : userDTOS){
+            if(!userids.contains(userDTO.getId())){
+                userTeamService.setUserBlock(userDTO);
+            };
+        }
+        return "멤버 수정 성공";
 
-/*    @GetMapping("/main/{id}")
+    }
+
+    @GetMapping("/main/{id}")
     public ResponseEntity<Object> getGroupMain(@PathVariable(value = "id") Long id){
         TeamDTO teamDTO = teamService.readTeamById(id);
-        teamDTO.toEntity().getChattingList();
-    }*/
+        List<ChattingDTO> chattings = ChattingDTO.listEntityToDto(teamDTO.toEntity().getChattingList());
+        JSONObject result = new JSONObject();
+        result.put("id",teamDTO.getId());
+        if(teamDTO.getNoticeDTO()!=null){
+            result.put("noticeTitle",teamDTO.getNoticeDTO().getTitle());
+            result.put("noticeContent",teamDTO.getNoticeDTO().getContent());
+        }else{
+            result.put("noticeTitle","");
+            result.put("noticeContent","");
+        }
+        JSONArray chats = new JSONArray();
+        for(ChattingDTO chattingDTO:chattings){
+            JSONObject tmp = new JSONObject();
+            tmp.put("id",chattingDTO.getId());
+            tmp.put("username",chattingDTO.getUserDTO().getName());
+            tmp.put("type",chattingDTO.getType());
+            tmp.put("content",chattingDTO.getContent());
+            chats.put(tmp);
+        }
+        result.put("chatArray",chats);
+        return new ResponseEntity<>(result.toMap(), HttpStatus.OK);
+    }
 }

@@ -86,7 +86,7 @@ CREATE TABLE `chatting` (
   `group_id` int(11) NOT NULL,
   `chat_content` varchar(10000) NOT NULL,
   `chat_time` datetime NOT NULL,
-  `chat_type` int(11) DEFAULT NULL,
+  `chat_type` varchar(45) DEFAULT NULL,
   `user_id` int(11) NOT NULL,
   `file_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`chat_id`),
@@ -163,7 +163,7 @@ CREATE TABLE `group` (
 
 LOCK TABLES `group` WRITE;
 /*!40000 ALTER TABLE `group` DISABLE KEYS */;
-INSERT INTO `group` VALUES (1,'firstgroup','처음 만나는 devreview',NULL);
+INSERT INTO `group` VALUES (1,'프론트엔드 개발자 모임','프론트엔드 개발자들이 모여서 자유롭게 의견을 나누는 공간입니다.',1);
 /*!40000 ALTER TABLE `group` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -180,7 +180,7 @@ CREATE TABLE `notice` (
   `notice_content` text NOT NULL,
   `notice_time` datetime DEFAULT NULL,
   PRIMARY KEY (`notice_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -189,6 +189,7 @@ CREATE TABLE `notice` (
 
 LOCK TABLES `notice` WRITE;
 /*!40000 ALTER TABLE `notice` DISABLE KEYS */;
+INSERT INTO `notice` VALUES (1,'공지사항','프론트엔드 개발자 모임에 오신 것을 환영합니다. \n비방, 욕설, 광고 등은 자제해주세요.\n감사합니다.','2023-06-06 21:25:45');
 /*!40000 ALTER TABLE `notice` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -383,7 +384,7 @@ CREATE TABLE `user_group` (
   KEY `group_id_ix_idx` (`group_id`),
   CONSTRAINT `group_id_ix` FOREIGN KEY (`group_id`) REFERENCES `group` (`group_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `user_id_ix` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -392,7 +393,7 @@ CREATE TABLE `user_group` (
 
 LOCK TABLES `user_group` WRITE;
 /*!40000 ALTER TABLE `user_group` DISABLE KEYS */;
-INSERT INTO `user_group` VALUES (1,1,0,1);
+INSERT INTO `user_group` VALUES (1,1,0,1),(1,2,1,2);
 /*!40000 ALTER TABLE `user_group` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -405,4 +406,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-06-06 20:53:29
+-- Dump completed on 2023-06-06 23:21:39

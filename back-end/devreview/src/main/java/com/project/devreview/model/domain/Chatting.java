@@ -1,5 +1,6 @@
 package com.project.devreview.model.domain;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -38,6 +39,7 @@ public class Chatting {
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "file_id")
+    @Nullable
     private AttachedFile attachedFile;
 
     @Builder
