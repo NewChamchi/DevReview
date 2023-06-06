@@ -47,7 +47,7 @@ public class QnAController {
         if(page==null) page=1;
 
         int count = questionService.readAll().size();
-        Page<QuestionDTO> questionlist = questionService.readAllforPage(page-1);
+        Page<QuestionDTO> questionlist = questionService.readBySearchforPage(page-1, search);
         JSONArray questionArray = new JSONArray();
         for(QuestionDTO questionDTO:questionlist.getContent()){
             JSONObject questionjson = new JSONObject();

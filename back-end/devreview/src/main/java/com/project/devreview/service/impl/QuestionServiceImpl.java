@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -61,6 +62,14 @@ public class QuestionServiceImpl implements QuestionService {
     public Page<QuestionDTO> readAllforPage(int page) {
         Pageable pageable = PageRequest.of(page, 10);
         Page<Question> entities = questionRepository.findAll(pageable);
+        Page<QuestionDTO> questionDTOS = entities.map(QuestionDTO::toDto);
+        return questionDTOS;
+    }
+
+    @Override
+    public Page<QuestionDTO> readBySearchforPage(int page, String search) {
+        Pageable pageable = PageRequest.of(page,10, Sort.Direction.DESC);
+        Page<Question> entities = questionRepository.findByTitleContaining(pageable,search);
         Page<QuestionDTO> questionDTOS = entities.map(QuestionDTO::toDto);
         return questionDTOS;
     }

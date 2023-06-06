@@ -46,8 +46,8 @@ public class GroupController {
 
 
         JSONObject teamjsons = new JSONObject();
-
-        Page<TeamDTO> teams = teamService.getList(page-1);
+        Page<TeamDTO> teams = teamService.getSearchOrderList(page-1, search);
+//        Page<TeamDTO> teams = teamService.getList(page-1);
         List<TeamDTO> teamDTOS = teamService.readTeamList();
         int count = teamDTOS.size();
         int pagecount = (int) Math.ceil(count/8.0);
@@ -99,7 +99,8 @@ public class GroupController {
         List<PostDTO> postList = postService.readPostByGroup(id);
         int count = postList.size();
         int pagecount = (int) Math.ceil(count/8.0);
-        Page<PostDTO> postDTOS = postService.readPostByGroup(teamDTO,page-1);
+//        Page<PostDTO> postDTOS = postService.readPostByGroup(teamDTO,page-1);
+        Page<PostDTO> postDTOS = postService.readPostBySearchOrder(teamDTO,search,page-1);
         JSONObject result = new JSONObject();
         result.put("pageCount",pagecount);
         result.put("currentPage",page);

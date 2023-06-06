@@ -16,7 +16,7 @@ public interface TeamRepository extends JpaRepository<Team,Long> {
 //        @Query("UPDATE \"Group\" a SET a.name = :name, a.intro = :intro WHERE a.id = :id")
 //        int updateNameAndIntro(Long id, String name, String intro);
 
-
+        Page<Team> findByNameContaining(String search, Pageable pageable);
         @Override
         Page<Team> findAll(Pageable pageable);
 }

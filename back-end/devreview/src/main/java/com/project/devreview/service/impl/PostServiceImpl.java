@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -51,6 +52,14 @@ public class PostServiceImpl implements PostService {
         Page<Post> entities = postRepository.findAllByTeam(pageable,teamDTO.toEntity());
         Page<PostDTO> postDTOS = entities.map(PostDTO::toDto);
 
+        return postDTOS;
+    }
+
+    @Override
+    public Page<PostDTO> readPostBySearchOrder(TeamDTO teamDTO, String search, int page) {
+        Pageable pageable = PageRequest.of(page, 8, Sort.Direction.DESC);
+        Page<Post> entities = postRepository.findByTitleContaining(pageable,search,teamDTO.toEntity());
+        Page<PostDTO> postDTOS = entities.map(PostDTO::toDto);
         return postDTOS;
     }
 
