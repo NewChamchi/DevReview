@@ -1,6 +1,6 @@
 package com.project.devreview.controller;
 
-import com.project.devreview.func.StringarrToList;
+import com.project.devreview.func.MadeFunc;
 import com.project.devreview.model.dto.*;
 import com.project.devreview.service.interf.*;
 import lombok.AllArgsConstructor;
@@ -36,6 +36,7 @@ public class QnAController {
     @Autowired
     private TagService tagService;
 
+    //api test ok (search test X)
     @GetMapping(value = {"/question/list/{search}&{page}", "/question/list"})
     @ResponseBody
     public ResponseEntity<Object> readQuestionList(
@@ -44,6 +45,7 @@ public class QnAController {
     {
         if(search==null) search = "";
         if(page==null) page=1;
+
         Page<QuestionDTO> questionlist = questionService.readAllforPage(page-1);
         JSONArray questionArray = new JSONArray();
         for(QuestionDTO questionDTO:questionlist.getContent()){
@@ -52,34 +54,38 @@ public class QnAController {
             questionjson.put("title",questionDTO.getTitle());
             questionjson.put("author",questionDTO.getUserDTO().getName());
             questionjson.put("date",questionDTO.getTime());
-            questionjson.put("tags",
-                    quesTagService.findTagByQues(questionService.readQues(questionDTO.getId()))
-            );
+            if(questionDTO.getType()){
+                questionjson.put("type","chatgpt");
+            }else{
+                questionjson.put("type","normal");
+            }
+
+            List<TagDTO> tagDTOS = quesTagService.findTagByQues(questionService.readQues(questionDTO.getId()));
+            questionjson.put("tags",MadeFunc.ListTagToString(tagDTOS));
             questionjson.put("views",questionDTO.getHit());
             questionArray.put(questionjson);
         }
-//        return new ResponseEntity<>(questionArray.toList(),HttpStatus.OK);
         return new ResponseEntity<>(questionArray.toList(), HttpStatus.OK);
     }
 
+    //api test ok
     @GetMapping("/question/detail/normal/{ques_id}")
     @ResponseBody
     public ResponseEntity<Object> readQuestion(@PathVariable("ques_id") Long ques_id){
-        Map<String,Object> map = new HashMap<>();
         JSONObject response = new JSONObject();
 
         QuestionDTO questionDTO = questionService.readQues(ques_id);
-
         List<AnswerDTO> answers = questionService.readAnswers(ques_id);
-        JSONObject questionpage = new JSONObject();
         JSONArray answerjsons = new JSONArray();
-        JSONArray commentArrs = new JSONArray();
         JSONObject questioninfo = new JSONObject();
+
         questioninfo.put("id",questionDTO.getId());
         questioninfo.put("title",questionDTO.getTitle());
         questioninfo.put("author",questionDTO.getUserDTO().getName());
         questioninfo.put("date",questionDTO.getTime());
-        questioninfo.put("tags",quesTagService.findTagByQues(questionService.readQues(ques_id)));
+        questioninfo.put("type","normal");
+        List<TagDTO> tagDTOS = quesTagService.findTagByQues(questionService.readQues(ques_id));
+        questioninfo.put("tags",MadeFunc.ListTagToString(tagDTOS));
         questioninfo.put("content",questionDTO.getContent());
         for(AnswerDTO answerDTO:answers){
             JSONObject ananswer = new JSONObject();
@@ -102,15 +108,13 @@ public class QnAController {
         }
         response.put("questionData",questioninfo);
         response.put("AnswerData",answerjsons);
-        System.out.println(questioninfo);
-        System.out.println(answerjsons);
-        System.out.println(response);
         questionService.updateHit(ques_id);
 
 
         return new ResponseEntity<>(response.toMap(), HttpStatus.OK);
     }
 
+    //api test X
     @GetMapping("/question/detail/chatgpt/{ques_id}")
     @ResponseBody
     public ResponseEntity<Object> readQuestionAnsweredChatGPT(@PathVariable("ques_id") Long ques_id){
@@ -125,7 +129,9 @@ public class QnAController {
         questioninfo.put("title",questionDTO.getTitle());
         questioninfo.put("author",questionDTO.getUserDTO().getName());
         questioninfo.put("date",questionDTO.getTime());
-        questioninfo.put("tags",quesTagService.findTagByQues(questionService.readQues(ques_id)));
+        questioninfo.put("type","chatgpt");
+        List<TagDTO> tagDTOS = quesTagService.findTagByQues(questionService.readQues(ques_id));
+        questioninfo.put("tags",MadeFunc.ListTagToString(tagDTOS));
         questioninfo.put("content",questionDTO.getContent());
         for(AnswerDTO answerDTO:answers){
             JSONObject ananswer = new JSONObject();
@@ -150,7 +156,6 @@ public class QnAController {
         response.put("AnswerData",answerjsons);
         questionService.updateHit(ques_id);
 
-
         return new ResponseEntity<>(response.toMap(), HttpStatus.OK);
     }
 
@@ -161,16 +166,18 @@ public class QnAController {
     public String writeQuestion(@RequestBody HashMap<String, Object> map){
         System.out.println(map);
         UserDTO finduser = userService.findUserByName(map.get("author").toString());
+        Boolean type = false;
+        if(map.get("type").toString()=="chatgpt"){
+            type = true;
+        }
         QuestionDTO questionDTO = new QuestionDTO(
-                map.get("title").toString(),map.get("content").toString(), LocalDateTime.now(),0,finduser
+                map.get("title").toString(),map.get("content").toString(), LocalDateTime.now().plusHours(9),0,type,finduser
         );
 
-        System.out.println("title : "+map.get("title"));
-        System.out.println("content: "+map.get("content"));
-        System.out.println("author: "+ map.get("author"));
         questionService.registerQues(questionDTO);
         String tags = map.get("tags").toString();
-        List<String> tagarr = StringarrToList.StringArrayToList(tags);
+        List<String> tagarr = MadeFunc.StringArrayToList(tags);
+        System.out.println(map.get("tags"));
         System.out.println(tagarr);
         QuestionDTO updatedQues = questionService.readByTitleAndUser(questionDTO);
         for(String tag:tagarr){
@@ -178,7 +185,6 @@ public class QnAController {
                 quesTagService.registerQuesTag(updatedQues.getId(), tagService.readTagByName(tag).getId());
             }
             else {
-//                Long id = tagService.setNewTag(tag);
                 TagDTO tagDTO = new TagDTO(tag);
                 tagService.setNewTag(tagDTO);
                 quesTagService.registerQuesTag(updatedQues.getId(), tagService.readTagByName(tag).getId());
@@ -193,12 +199,12 @@ public class QnAController {
     public ResponseEntity<Object> updateQuestion(@PathVariable("ques_id") Long id){
         QuestionDTO questionDTO = questionService.readQues(id);
         List<TagDTO> tagDTOS = quesTagService.findTagByQues(questionDTO);
-//        QuestionDTO updated = questionService.updateQues(questionDTO);
+
         JSONObject questionjson = new JSONObject();
         questionjson.put("title",questionDTO.getTitle());
         questionjson.put("author",questionDTO.getUserDTO().getName());
         questionjson.put("date",questionDTO.getTime());
-        questionjson.put("tags",quesTagService.findTagByQues(questionService.readQues(id)));
+        questionjson.put("tags",MadeFunc.ListTagToString(tagDTOS));
         questionjson.put("content",questionDTO.getContent());
         return new ResponseEntity<>(questionjson.toMap(),HttpStatus.OK);
     }
@@ -209,7 +215,7 @@ public class QnAController {
     public String updateQuestion(@RequestBody Map<String, Object> map){
         QuestionDTO questionDTO = questionService.readQues(Long.valueOf(map.get("id").toString()));
 
-        List<String> tags = StringarrToList.StringArrayToList(map.get("tags").toString());
+        List<String> tags = MadeFunc.StringArrayToList(map.get("tags").toString());
         List<String> origintags = new ArrayList<>();
         for(TagDTO tagDTO:quesTagService.findTagByQues(questionDTO)){
             origintags.add(tagDTO.getName());
@@ -246,7 +252,6 @@ public class QnAController {
         return "질문 수정 성공";
     }
 
-    //테스트 전
     @DeleteMapping("/question/delete/{id}")
     @ResponseBody
     public String deleteQuestion(@PathVariable("id") Long id){
@@ -263,7 +268,7 @@ public class QnAController {
     @ResponseBody
     public String registerAnswer(@RequestBody Map<String, Object> map){
         AnswerDTO answerDTO = new AnswerDTO(
-                map.get("content").toString(),false, LocalDateTime.now().plusHours(9),
+                map.get("content").toString(),LocalDateTime.now().plusHours(9),
                 userService.findUserByName(map.get("author").toString()),
                 questionService.readQues(Long.valueOf(map.get("questionId").toString())));
         answerService.registerAnswer(answerDTO);
@@ -279,8 +284,7 @@ public class QnAController {
         before.setContent(map.get("content").toString());
         answerService.updateAnswer(before);
         AnswerDTO after = answerService.readById(id);
-        System.out.println(before);
-        System.out.println(after);
+
 //        AnswerDTO answerDTO = new AnswerDTO(
 //                map.get("content").toString(),false, (LocalDateTime) map.get("date"),
 //                userService.findUserByName(map.get("author").toString()),

@@ -16,23 +16,26 @@ public class QuestionDTO {
     private String content;
     private LocalDateTime time;
     private int hit;
+    private Boolean type;
     private UserDTO userDTO;
 
     @Builder
-    public QuestionDTO(String title, String content, LocalDateTime time, int hit, UserDTO userDTO){
+    public QuestionDTO(String title, String content, LocalDateTime time, int hit, Boolean type, UserDTO userDTO){
         this.title=title;
         this.content=content;
         this.time = time;
         this.hit = hit;
+        this.type = type;
         this.userDTO = userDTO;
     }
     @Builder
-    public QuestionDTO(Long id, String title, String content, LocalDateTime time, int hit, UserDTO userDTO){
+    public QuestionDTO(Long id, String title, String content, LocalDateTime time, int hit, Boolean type, UserDTO userDTO){
         this.id = id;
         this.title=title;
         this.content=content;
         this.time = time;
         this.hit = hit;
+        this.type= type;
         this.userDTO = userDTO;
     }
     public QuestionDTO(Question question){
@@ -41,6 +44,7 @@ public class QuestionDTO {
         content = question.getContent();
         time = question.getTime();
         hit = question.getHit();
+        type = question.getType();
         userDTO = new UserDTO(question.getUser());
     }
 
@@ -55,6 +59,7 @@ public class QuestionDTO {
                 .content(content)
                 .time(time)
                 .hit(hit)
+                .type(type)
                 .user(userDTO.toEntity())
                 .build();
     }
@@ -66,6 +71,7 @@ public class QuestionDTO {
                 .content(content)
                 .time(time)
                 .hit(hit)
+                .type(type)
                 .user(setUser)
                 .build();
     }

@@ -1,7 +1,6 @@
 package com.project.devreview.model.dto;
 
 import com.project.devreview.model.domain.Post;
-import com.project.devreview.model.domain.Team;
 import lombok.Builder;
 import lombok.Data;
 
@@ -16,21 +15,24 @@ public class PostDTO {
     private String content;
     private LocalDateTime datetime;
     private TeamDTO teamDTO;
+    private UserDTO userDTO;
 
     @Builder
-    public PostDTO(String title, String content, LocalDateTime datetime, TeamDTO teamDTO){
+    public PostDTO(String title, String content, LocalDateTime datetime, TeamDTO teamDTO, UserDTO userDTO){
         this.title = title;
         this.content = content;
         this.datetime = datetime;
         this.teamDTO = teamDTO;
+        this.userDTO = userDTO;
     }
     @Builder
-    public PostDTO(Long id, String title, String content, LocalDateTime datetime, TeamDTO teamDTO){
+    public PostDTO(Long id, String title, String content, LocalDateTime datetime, TeamDTO teamDTO, UserDTO userDTO){
         this.id = id;
         this.title = title;
         this.content = content;
         this.datetime = datetime;
         this.teamDTO = teamDTO;
+        this.userDTO = userDTO;
     }
 
     @Builder
@@ -40,6 +42,7 @@ public class PostDTO {
         this.content = post.getContent();
         this.datetime = post.getDatetime();
         this.teamDTO = TeamDTO.toDto(post.getTeam());
+        this.userDTO = UserDTO.toDto(post.getUser());
     }
 
     public Post toEntity(){
@@ -49,6 +52,7 @@ public class PostDTO {
                 .content(content)
                 .datetime(datetime)
                 .team(teamDTO.toEntity())
+                .user(userDTO.toEntity())
                 .build();
     }
 

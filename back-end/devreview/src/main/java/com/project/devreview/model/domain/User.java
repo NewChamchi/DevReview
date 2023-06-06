@@ -49,6 +49,9 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Chatting> chattingList = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+    private List<Post> postList = new ArrayList<>();
+
     @Builder
     public User(Long id, String name, String email, int mic, int audio, String loginId, String password) {
         this.id = id;

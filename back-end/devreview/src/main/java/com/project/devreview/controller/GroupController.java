@@ -33,6 +33,7 @@ public class GroupController {
     UserTeamService userTeamService;
 
 
+
     @GetMapping(value = {"/list/{search}&{page}","/list"})
     public ResponseEntity<Object> readGroupList(
             @PathVariable(value = "search", required = false) String search,
@@ -41,7 +42,7 @@ public class GroupController {
         if(search==null) search = "";
         if(page==null) page=1;
 
-        Page<TeamDTO> teams = teamService.getList(page);
+        Page<TeamDTO> teams = teamService.getList(page-1);
         List<TeamDTO> teamDTOS = teams.stream().toList();
         JSONObject teamjsons = new JSONObject();
         JSONArray groups = new JSONArray();
@@ -50,9 +51,26 @@ public class GroupController {
             temp.put("id",teamDTO.getId());
             temp.put("name",teamDTO.getName());
             temp.put("description",teamDTO.getIntro());
-            temp.put("members",userTeamService.readUserByTeam(teamDTO));
-            temp.put("posts",PostDTO.listEntityToDto(teamDTO.toEntity().getPosts()));
-            groups.put(teamDTO);
+            JSONArray users = new JSONArray();
+            for(UserDTO userDTO : userTeamService.readUserByTeam(teamDTO)){
+                JSONObject user = new JSONObject();
+                user.put("id",userDTO.getId());
+                user.put("name",userDTO.getName());
+                users.put(user);
+            }
+            temp.put("members",users);
+            JSONArray posts = new JSONArray();
+            List<PostDTO> postDTOS = postService.readPostByGroup(teamDTO.getId());
+            for(PostDTO postDTO:postDTOS){
+                JSONObject post = new JSONObject();
+                post.put("id",postDTO.getId());
+                post.put("title",postDTO.getTitle());
+                post.put("author",postDTO.getUserDTO().getName());
+                posts.put(post);
+            }
+            temp.put("posts",posts);
+//            temp.put("posts",PostDTO.listEntityToDto(teamDTO.toEntity().getPosts()));
+            groups.put(temp);
         }
         teamjsons.put("groupArray",groups);
         return new ResponseEntity<>(teamjsons.toMap(),HttpStatus.OK);
@@ -66,7 +84,7 @@ public class GroupController {
     {
         if(search==null) search = "";
         if(page==null) page=1;
-        List<PostDTO>
+
     }*/
 
     @GetMapping("/post/{id}")
@@ -93,11 +111,17 @@ public class GroupController {
     public ResponseEntity<Object> getGroupExile(@PathVariable(value = "id") Long group_id){
         TeamDTO teamDTO = teamService.readTeamById(group_id);
         List<UserDTO> userDTOS = userTeamService.readUserByTeam(teamDTO);
-        return (ResponseEntity<Object>) userDTOS;
+        return new ResponseEntity<>(userDTOS,HttpStatus.OK);
     }
 
 /*    @PutMapping("/exile/update")
     public String exileUser(@RequestBody Map<String,Object> map){
 
+    }*/
+
+/*    @GetMapping("/main/{id}")
+    public ResponseEntity<Object> getGroupMain(@PathVariable(value = "id") Long id){
+        TeamDTO teamDTO = teamService.readTeamById(id);
+        teamDTO.toEntity().getChattingList();
     }*/
 }

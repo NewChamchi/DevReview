@@ -48,8 +48,8 @@ public class AnswerServiceImpl implements AnswerService {
         List<Long> ids = new ArrayList<>();
         for(Answer answer : answerRepository.findByQuestionId(id)){
             ids.add(answer.getId());
+            answerRepository.deleteById(answer.getId());
         }
-        answerRepository.deleteById(id);
         return ids;
     }
 }

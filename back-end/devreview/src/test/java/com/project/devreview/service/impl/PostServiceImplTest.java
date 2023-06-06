@@ -18,11 +18,11 @@ class PostServiceImplTest {
     @Autowired
     TeamService teamService;
 
-    @Test
-    void registerPost() {
-        PostDTO postDTO = new PostDTO("title","2group post test", LocalDateTime.now(),teamService.readTeamById(2L));
-        postService.registerPost(postDTO);
-    }
+//    @Test
+//    void registerPost(){
+//        PostDTO postDTO = new PostDTO("title","2group post test", LocalDateTime.now(),teamService.readTeamById(2L));
+//        postService.registerPost(postDTO);
+//    }
 
     @Test
     void readPostById() {

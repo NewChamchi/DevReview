@@ -30,21 +30,27 @@ public class Post {
     @JoinColumn(name = "group_id")
     private Team team;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="user_id")
+    private User user;
+
     @Builder
-    public Post(Long id, String title, String content, LocalDateTime datetime, Team team){
+    public Post(Long id, String title, String content, LocalDateTime datetime, Team team, User user){
         this.id = id;
         this.title = title;
         this.content = content;
         this.datetime = datetime;
         this.team = team;
+        this.user = user;
     }
 
     @Builder
-    public Post(String title, String content, LocalDateTime datetime, Team team){
+    public Post(String title, String content, LocalDateTime datetime, Team team, User user){
         this.title = title;
         this.content = content;
         this.datetime = datetime;
         this.team = team;
+        this.user = user;
     }
 
     public void setTeam(Team team){

@@ -14,24 +14,21 @@ import java.util.stream.Collectors;
 public class AnswerDTO {
     private long id;
     private String content;
-    private boolean isAuto;
     private LocalDateTime datetime;
     private UserDTO userDTO;
     private QuestionDTO questionDTO;
     @Builder
-    public AnswerDTO( String content, boolean isAuto, LocalDateTime datetime, UserDTO userDTO, QuestionDTO questionDTO){
+    public AnswerDTO( String content, LocalDateTime datetime, UserDTO userDTO, QuestionDTO questionDTO){
 
         this.content = content;
-        this.isAuto = isAuto;
         this.datetime = datetime;
         this.userDTO = userDTO;
         this.questionDTO = questionDTO;
     }
     @Builder
-    public AnswerDTO(Long id, String content, boolean isAuto, LocalDateTime datetime, UserDTO userDTO, QuestionDTO questionDTO){
+    public AnswerDTO(Long id, String content, LocalDateTime datetime, UserDTO userDTO, QuestionDTO questionDTO){
         this.id = id;
         this.content = content;
-        this.isAuto = isAuto;
         this.datetime = datetime;
         this.userDTO = userDTO;
         this.questionDTO = questionDTO;
@@ -40,7 +37,6 @@ public class AnswerDTO {
     public AnswerDTO(Answer answer){
         this.id = answer.getId();
         this.content = answer.getContent();
-        this.isAuto = answer.isAuto();
         this.datetime = answer.getDatetime();
         this.userDTO = new UserDTO(answer.getUser());
         this.questionDTO = new QuestionDTO(answer.getQuestion());
@@ -50,7 +46,6 @@ public class AnswerDTO {
         return Answer.builder()
                 .id(id)
                 .content(content)
-                .isAuto(isAuto)
                 .datetime(datetime)
                 .user(userDTO.toEntity())
                 .question(questionDTO.toEntity())
@@ -60,7 +55,6 @@ public class AnswerDTO {
         return Answer.builder()
                 .id(id)
                 .content(content)
-                .isAuto(isAuto)
                 .datetime(datetime)
                 .user(setUser)
                 .question(setQuestion)
