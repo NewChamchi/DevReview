@@ -66,7 +66,8 @@ public class TeamServiceImpl implements TeamService {
 
     @Override
     public Page<TeamDTO> getSearchOrderList(int page, String search) {
-        Pageable pageable = PageRequest.of(page, 8, Sort.Direction.DESC);
+        Sort sort = Sort.by("name").ascending();
+        Pageable pageable = PageRequest.of(page, 8, sort);
         Page<Team> entities = teamRepository.findByNameContaining(search,pageable);
         Page<TeamDTO> teamDTOS = entities.map(TeamDTO::toDto);
         return teamDTOS;
