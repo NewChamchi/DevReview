@@ -74,7 +74,7 @@ public class QuesTagServiceImpl implements QuesTagService {
     }
 
     @Override
-    public Boolean removeByQuesTag(Long quesId, Long tagId) {
+    public int removeByQuesTag(Long quesId, Long tagId) {
         return quesTagRepository.deleteByQuestionAndTag(questionRepository.findById(quesId),tagRepository.findById(tagId));
     }
 }
