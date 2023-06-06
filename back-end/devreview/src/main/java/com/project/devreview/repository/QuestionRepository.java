@@ -21,6 +21,9 @@ public interface QuestionRepository extends Repository<Question, Long> {
     Question findByTitleAndUser(String title, User user);
 
     @Modifying(clearAutomatically = true)
+    @Query("UPDATE Question a SET a.hit = :hit WHERE a.id = :id")
+    int updateHit(@Param("id") Long id, @Param("hit") int hit);
+    @Modifying(clearAutomatically = true)
     @Query("UPDATE Question a SET a.title = :title, a.content = :content WHERE a.id = :id")
     int updateTitleAndContent(@Param("id") Long id, @Param("title") String title, @Param("content") String content);
     void deleteById(Long id);

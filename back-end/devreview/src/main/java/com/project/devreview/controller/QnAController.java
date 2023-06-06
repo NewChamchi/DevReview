@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -43,9 +44,9 @@ public class QnAController {
     {
         if(search==null) search = "";
         if(page==null) page=1;
-        List<QuestionDTO> questionlist = questionService.readAll();
+        Page<QuestionDTO> questionlist = questionService.readAllforPage(page-1);
         JSONArray questionArray = new JSONArray();
-        for(QuestionDTO questionDTO:questionlist){
+        for(QuestionDTO questionDTO:questionlist.getContent()){
             JSONObject questionjson = new JSONObject();
             questionjson.put("id",questionDTO.getId());
             questionjson.put("title",questionDTO.getTitle());
@@ -58,7 +59,7 @@ public class QnAController {
             questionArray.put(questionjson);
         }
 //        return new ResponseEntity<>(questionArray.toList(),HttpStatus.OK);
-        return new ResponseEntity<>(questionlist, HttpStatus.OK);
+        return new ResponseEntity<>(questionArray.toList(), HttpStatus.OK);
     }
 
     @GetMapping("/question/detail/normal/{ques_id}")
@@ -104,10 +105,55 @@ public class QnAController {
         System.out.println(questioninfo);
         System.out.println(answerjsons);
         System.out.println(response);
+        questionService.updateHit(ques_id);
 
 
         return new ResponseEntity<>(response.toMap(), HttpStatus.OK);
     }
+
+    @GetMapping("/question/detail/chatgpt/{ques_id}")
+    @ResponseBody
+    public ResponseEntity<Object> readQuestionAnsweredChatGPT(@PathVariable("ques_id") Long ques_id){
+        JSONObject response = new JSONObject();
+
+        QuestionDTO questionDTO = questionService.readQues(ques_id);
+
+        List<AnswerDTO> answers = questionService.readAnswers(ques_id);
+        JSONArray answerjsons = new JSONArray();
+        JSONObject questioninfo = new JSONObject();
+        questioninfo.put("id",questionDTO.getId());
+        questioninfo.put("title",questionDTO.getTitle());
+        questioninfo.put("author",questionDTO.getUserDTO().getName());
+        questioninfo.put("date",questionDTO.getTime());
+        questioninfo.put("tags",quesTagService.findTagByQues(questionService.readQues(ques_id)));
+        questioninfo.put("content",questionDTO.getContent());
+        for(AnswerDTO answerDTO:answers){
+            JSONObject ananswer = new JSONObject();
+            ananswer.put("id",answerDTO.getId());
+            ananswer.put("content",answerDTO.getContent());
+            ananswer.put("author","ChatGPT");
+            ananswer.put("date",answerDTO.getDatetime());
+            List<CommentDTO> comments = commentService.readCommentsByAnswer(answerDTO.getId());
+            JSONArray jsoncomments = new JSONArray();
+            for(CommentDTO commentDTO:comments){
+                JSONObject acomment = new JSONObject();
+                acomment.put("id",commentDTO.getId());
+                acomment.put("content",commentDTO.getContent());
+                acomment.put("author",commentDTO.getUserDTO().getName());
+                acomment.put("date",commentDTO.getDatetime());
+                jsoncomments.put(acomment);
+            }
+            ananswer.put("comments",jsoncomments);
+            answerjsons.put(ananswer);
+        }
+        response.put("questionData",questioninfo);
+        response.put("AnswerData",answerjsons);
+        questionService.updateHit(ques_id);
+
+
+        return new ResponseEntity<>(response.toMap(), HttpStatus.OK);
+    }
+
 
     //api 연결 ok
     @PostMapping("/question/create")
