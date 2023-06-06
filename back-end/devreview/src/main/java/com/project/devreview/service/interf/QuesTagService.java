@@ -13,5 +13,5 @@ public interface QuesTagService {
     public List<QuestionDTO> findQuesByTag(TagDTO tagDTO);
 
     public Boolean remove(Long questagId);
-    public Boolean removeByQuesTag(Long quesId, Long tagId);
+    public int removeByQuesTag(Long quesId, Long tagId);
 }

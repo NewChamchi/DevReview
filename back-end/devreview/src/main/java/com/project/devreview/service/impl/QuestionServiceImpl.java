@@ -8,6 +8,7 @@ import com.project.devreview.model.dto.QuestionDTO;
 import com.project.devreview.repository.*;
 import com.project.devreview.service.interf.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,10 +44,20 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
+    public QuestionDTO readByTitleAndUser(QuestionDTO questionDTO) {
+        return QuestionDTO.toDto(questionRepository.findByTitleAndUser(questionDTO.getTitle(),questionDTO.getUserDTO().toEntity()));
+    }
+
+    @Override
     public List<QuestionDTO> readAll() {
         List<Question> questions = questionRepository.findAll();
         List<QuestionDTO> questionDTOS = QuestionDTO.listEntityToDto(questions);
         return questionDTOS;
+    }
+
+    @Override
+    public Page<QuestionDTO> readAllforPage(Page page) {
+        return null;
     }
 
     @Override
