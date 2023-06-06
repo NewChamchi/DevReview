@@ -9,6 +9,8 @@ import com.project.devreview.repository.*;
 import com.project.devreview.service.interf.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -56,8 +58,11 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
-    public Page<QuestionDTO> readAllforPage(Page page) {
-        return null;
+    public Page<QuestionDTO> readAllforPage(int page) {
+        Pageable pageable = PageRequest.of(page, 10);
+        Page<Question> entities = questionRepository.findAll(pageable);
+        Page<QuestionDTO> questionDTOS = entities.map(QuestionDTO::toDto);
+        return questionDTOS;
     }
 
     @Override
@@ -72,6 +77,14 @@ public class QuestionServiceImpl implements QuestionService {
 //        Question ques = questionDTO.toEntity();
         List<QuesTag> quesTags = quesTagRepository.findByQuestionId(ques.getId());
         questionRepository.updateTitleAndContent(ques.getId(),ques.getTitle(),ques.getContent());
+        return true;
+    }
+
+    @Override
+    public Boolean updateHit(Long id) {
+        Question question = questionRepository.findById(id);
+        question.setHit(question.getHit()+1);
+        questionRepository.updateHit(id,questionRepository.findById(id).getHit());
         return true;
     }
 

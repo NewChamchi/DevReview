@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -43,9 +44,9 @@ public class QnAController {
     {
         if(search==null) search = "";
         if(page==null) page=1;
-        List<QuestionDTO> questionlist = questionService.readAll();
+        Page<QuestionDTO> questionlist = questionService.readAllforPage(page-1);
         JSONArray questionArray = new JSONArray();
-        for(QuestionDTO questionDTO:questionlist){
+        for(QuestionDTO questionDTO:questionlist.getContent()){
             JSONObject questionjson = new JSONObject();
             questionjson.put("id",questionDTO.getId());
             questionjson.put("title",questionDTO.getTitle());
@@ -58,7 +59,7 @@ public class QnAController {
             questionArray.put(questionjson);
         }
 //        return new ResponseEntity<>(questionArray.toList(),HttpStatus.OK);
-        return new ResponseEntity<>(questionlist, HttpStatus.OK);
+        return new ResponseEntity<>(questionArray.toList(), HttpStatus.OK);
     }
 
     @GetMapping("/question/detail/normal/{ques_id}")
@@ -104,6 +105,7 @@ public class QnAController {
         System.out.println(questioninfo);
         System.out.println(answerjsons);
         System.out.println(response);
+        questionService.updateHit(ques_id);
 
 
         return new ResponseEntity<>(response.toMap(), HttpStatus.OK);
