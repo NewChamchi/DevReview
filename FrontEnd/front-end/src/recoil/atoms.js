@@ -14,6 +14,6 @@ export const rc_user_informationAtom = atom({
     key: "rc_user_information",
     default: {
         id: 1,
-        name: "John",
+        name: "",
     },
 });

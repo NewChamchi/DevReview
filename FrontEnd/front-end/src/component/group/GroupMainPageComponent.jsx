@@ -9,240 +9,37 @@ import {
     FaSignInAlt,
     FaCode,
     FaBell,
+    FaEdit,
+    FaClipboard,
+    FaUserCog,
 } from "react-icons/fa";
 
 const GroupMainPageComponent = (props) => {
-    const {} = props;
+    const {
+        currentUser,
+        groupMainData,
+        chatMessage,
+        roomType,
+        isOpen,
+        toggleOpen,
+        selectedRoomId,
+        isMicActive,
+        isScreenActive,
+        setGroupMainData,
+        setChatMessage,
+        setRoomType,
+        setIsOpen,
+        setSelectedRoomId,
+        setIsMicActive,
+        setIsScreenActive,
+        toggleMicActive,
+        toggleScreenActive,
+        handleRoomClick,
+        handleRoomEnter,
+        sendMessage,
+    } = props;
     // Dummy data for chat messages
-    const currentUser = "John Doe";
-    const chatData = [
-        {
-            id: 1,
-            username: "John Doe",
-            type: "text",
-            content: "Hello everyone, how are you?",
-        },
-        {
-            id: 2,
-            username: "Jane Smith",
-            type: "text",
-            content: "I'm good, thanks for asking!",
-        },
-        {
-            id: 3,
-            username: "Alice Johnson",
-            type: "text",
-            content: "Hey guys, what's up?",
-        },
-        {
-            id: 4,
-            username: "John Doe",
-            type: "text",
-            content: "Just working on a project.",
-        },
-        {
-            id: 5,
-            username: "Jane Smith",
-            type: "text",
-            content: "Same here, it's pretty tough.",
-        },
-        {
-            id: 6,
-            username: "Alice Johnson",
-            type: "text",
-            content: "I feel you. Let's hang in there!",
-        },
-        {
-            id: 7,
-            username: "John Doe",
-            type: "text",
-            content: "Definitely. We got this!",
-        },
-        {
-            id: 8,
-            username: "Jane Smith",
-            type: "text",
-            content: "Absolutely! Let's do our best!",
-        },
-        {
-            id: 9,
-            username: "Alice Johnson",
-            type: "text",
-            content: "100% agree. Let's crush it!",
-        },
-        {
-            id: 10,
-            username: "John Doe",
-            type: "text",
-            content: "Yes, let's! :)",
-        },
-        {
-            id: 11,
-            username: "John Doe",
-            type: "text",
-            content:
-                "This is a longer message for testing purposes. We are trying to see how this message will look in the chat box. Hopefully, it wraps correctly and looks good.",
-        },
-    ];
-    const title = "주간 공부 계획";
-    const content =
-        "안녕하세요. 이번 주에는 자바스크립트의 클로저와 콜백 함수에 대해 집중적으로 학습하려 합니다. 모두 함께 열심히 공부해 봅시다. 도움이 필요하면 언제든지 질문해 주세요!";
 
-    const chatRooms = [
-        {
-            id: 1,
-            name: "일반",
-            type: "normal",
-            members: ["John Doe", "Jane Smith", "Alice Johnson"],
-        },
-        {
-            id: 2,
-            name: "Java 공부",
-            type: "normal",
-            members: ["John Doe", "Bob Parker"],
-        },
-        {
-            id: 3,
-            name: "리액트 공부",
-            type: "normal",
-            members: ["Alice Johnson", "Charlie Davis"],
-        },
-        {
-            id: 4,
-            name: "강의",
-            type: "screen",
-            members: ["Jane Smith", "Charlie Davis", "Bob Parker"],
-        },
-        {
-            id: 5,
-            name: "잡담",
-            type: "microphone",
-            members: ["John Doe", "Jane Smith", "Alice Johnson"],
-        },
-    ];
-
-    const groupMainData = {
-        noticeTitle: "주간 공부 계획",
-        noticeContent:
-            "안녕하세요. 이번 주에는 자바스크립트의 클로저와 콜백 함수에 대해 집중적으로 학습하려 합니다. 모두 함께 열심히 공부해 봅시다. 도움이 필요하면 언제든지 질문해 주세요!",
-        chatArray: [
-            {
-                id: 1,
-                username: "John Doe",
-                type: "text",
-                content: "Hello everyone, how are you?",
-            },
-            {
-                id: 2,
-                username: "Jane Smith",
-                type: "text",
-                content: "I'm good, thanks for asking!",
-            },
-            {
-                id: 3,
-                username: "Alice Johnson",
-                type: "text",
-                content: "Hey guys, what's up?",
-            },
-            {
-                id: 4,
-                username: "John Doe",
-                type: "text",
-                content: "Just working on a project.",
-            },
-            {
-                id: 5,
-                username: "Jane Smith",
-                type: "text",
-                content: "Same here, it's pretty tough.",
-            },
-            {
-                id: 6,
-                username: "Alice Johnson",
-                type: "text",
-                content: "I feel you. Let's hang in there!",
-            },
-            {
-                id: 7,
-                username: "John Doe",
-                type: "text",
-                content: "Definitely. We got this!",
-            },
-            {
-                id: 8,
-                username: "Jane Smith",
-                type: "text",
-                content: "Absolutely! Let's do our best!",
-            },
-            {
-                id: 9,
-                username: "Alice Johnson",
-                type: "text",
-                content: "100% agree. Let's crush it!",
-            },
-            {
-                id: 10,
-                username: "John Doe",
-                type: "text",
-                content: "Yes, let's! :)",
-            },
-            {
-                id: 11,
-                username: "John Doe",
-                type: "text",
-                content:
-                    "This is a longer message for testing purposes. We are trying to see how this message will look in the chat box. Hopefully, it wraps correctly and looks good.",
-            },
-        ],
-        chatRooms: [
-            {
-                id: 1,
-                name: "일반",
-                type: "normal",
-                members: ["John Doe", "Jane Smith", "Alice Johnson"],
-            },
-            {
-                id: 2,
-                name: "Java 공부",
-                type: "normal",
-                members: ["John Doe", "Bob Parker"],
-            },
-            {
-                id: 3,
-                name: "리액트 공부",
-                type: "normal",
-                members: ["Alice Johnson", "Charlie Davis"],
-            },
-            {
-                id: 4,
-                name: "강의",
-                type: "screen",
-                members: ["Jane Smith", "Charlie Davis", "Bob Parker"],
-            },
-            {
-                id: 5,
-                name: "잡담",
-                type: "microphone",
-                members: ["John Doe", "Jane Smith", "Alice Johnson"],
-            },
-        ],
-    };
-    const [isOpen, setIsOpen] = useState(false);
-    const toggleOpen = () => setIsOpen(!isOpen);
-    const [selectedRoomId, setSelectedRoomId] = useState(null);
-    const [isMicActive, setIsMicActive] = useState(false);
-    const [isScreenActive, setIsScreenActive] = useState(false);
-
-    const toggleMicActive = () => setIsMicActive(!isMicActive);
-    const toggleScreenActive = () => setIsScreenActive(!isScreenActive);
-    const handleRoomClick = (roomId) => {
-        setSelectedRoomId((prev) => (prev === roomId ? null : roomId));
-        console.log("roomId: ", roomId);
-    };
-
-    const handleRoomEnter = (roomName) => {
-        // logic to enter the room
-    };
     return (
         <GroupMainPageComponentBlock>
             <GroupMain>
@@ -251,27 +48,56 @@ const GroupMainPageComponent = (props) => {
                         <ChatRoomName>일반</ChatRoomName>
                         <NoticeIcon onClick={toggleOpen}>
                             <FaBell size={20} />
-                            <NoticeTitle>{title}</NoticeTitle>
+                            <NoticeTitle>
+                                {groupMainData.noticeTitle}
+                            </NoticeTitle>
                         </NoticeIcon>
                     </ChatRoomHeader>
                     <ChatWindow>
                         {isOpen && (
                             <NoticeBubble>
-                                <NoticeContent>{content}</NoticeContent>
+                                <NoticeContent>
+                                    {groupMainData.noticeContent}
+                                </NoticeContent>
                             </NoticeBubble>
                         )}
-                        {chatData.map((message, index) => (
-                            <ChatMessage
-                                key={index}
-                                isCurrentUser={message.username === currentUser}
-                            >
-                                <MessageUser>{message.username}</MessageUser>
-                                <MessageText>{message.content}</MessageText>
-                            </ChatMessage>
-                        ))}
+                        {roomType === "chat" &&
+                            groupMainData.chatArray?.map((message, index) => (
+                                <ChatMessage
+                                    key={index}
+                                    isCurrentUser={
+                                        message.username === currentUser
+                                    }
+                                >
+                                    <MessageUser>
+                                        {message.username}
+                                    </MessageUser>
+                                    <MessageText>{message.content}</MessageText>
+                                </ChatMessage>
+                            ))}
+                        {roomType === "screen" && (
+                            <ScreenShare>
+                                <ScreenShareText>
+                                    화면 공유 중입니다.
+                                </ScreenShareText>
+                            </ScreenShare>
+                        )}
+                        {roomType === "voice" && (
+                            <VoiceChat>
+                                <VoiceChatText>
+                                    음성 채팅 중입니다.
+                                </VoiceChatText>
+                            </VoiceChat>
+                        )}
                     </ChatWindow>
                     <MessageInputWrapper>
-                        <MessageInput placeholder="Write a message..." />
+                        <MessageInput
+                            value={chatMessage}
+                            onChange={(event) => {
+                                setChatMessage(event.target.value);
+                            }}
+                            placeholder="Write a message..."
+                        />
                         <FileInputLabel>
                             <FaImage size={20} />
                             <FileInput type="file" />
@@ -284,7 +110,12 @@ const GroupMainPageComponent = (props) => {
                             <FaCode size={20} />
                             <FileInput type="file" />
                         </FileInputLabel>
-                        <SendButton>
+                        <SendButton
+                            onClick={() => {
+                                sendMessage(chatMessage);
+                                setChatMessage("");
+                            }}
+                        >
                             <FaPaperPlane size={20} />
                         </SendButton>
                     </MessageInputWrapper>
@@ -292,69 +123,94 @@ const GroupMainPageComponent = (props) => {
                 <SidebarSection>
                     <ChatRoomContainer>
                         <ChatRoomTitle>채팅방</ChatRoomTitle>
-                        {chatRooms.map((room, index) => (
-                            <div key={index}>
-                                <ChatRoom
-                                    onClick={() => handleRoomClick(room.id)}
+                        <div>
+                            <ChatRoom onClick={() => handleRoomClick(1)}>
+                                <span>
+                                    일반
+                                    {/* "일반" 방은 아이콘이 없으므로 아무것도 추가하지 않습니다 */}
+                                </span>
+                                <EnterRoomButton
+                                    onClick={(event) => {
+                                        event.stopPropagation();
+                                        handleRoomEnter("chat");
+                                    }}
                                 >
-                                    <span>
-                                        {room.name}
+                                    <FaSignInAlt size={18} />
+                                </EnterRoomButton>
+                            </ChatRoom>
+                            {selectedRoomId === 1 && (
+                                <MemberList>
+                                    {/* member list */}
+                                    {/* {room.members.map((member, index) => (
+                                        <Member key={index}>{member}</Member>
+                                    ))} */}
+                                </MemberList>
+                            )}
+                        </div>
 
-                                        {room.type === "screen" && (
-                                            <FaDesktop
-                                                title="화면과 음성을 공유할 수 있습니다."
-                                                style={{
-                                                    marginLeft: "15px",
-                                                    color: "#aaa",
-                                                }}
-                                                size={18}
-                                            />
-                                        )}
-                                        {room.type === "microphone" && (
-                                            <FaMicrophone
-                                                title="음성을 공유할 수 있습니다."
-                                                style={{
-                                                    marginLeft: "15px",
-                                                    color: "#aaa",
-                                                }}
-                                                size={18}
-                                            />
-                                        )}
-                                    </span>
-                                    <EnterRoomButton
-                                        onClick={(event) => {
-                                            event.stopPropagation();
-                                            handleRoomEnter(room.name);
+                        <div>
+                            <ChatRoom onClick={() => handleRoomClick(2)}>
+                                <span>
+                                    화면 공유
+                                    <FaDesktop
+                                        title="화면과 음성을 공유할 수 있습니다."
+                                        style={{
+                                            marginLeft: "15px",
+                                            color: "#aaa",
                                         }}
-                                    >
-                                        <FaSignInAlt size={18} />
-                                    </EnterRoomButton>
-                                </ChatRoom>
-                                {selectedRoomId === room.id && (
-                                    <MemberList>
-                                        {room.members.map((member, index) => (
-                                            <Member key={index}>
-                                                {member}
-                                            </Member>
-                                        ))}
-                                    </MemberList>
-                                )}
-                            </div>
-                        ))}
+                                        size={18}
+                                    />
+                                </span>
+                                <EnterRoomButton
+                                    onClick={(event) => {
+                                        event.stopPropagation();
+                                        handleRoomEnter("screen");
+                                    }}
+                                >
+                                    <FaSignInAlt size={18} />
+                                </EnterRoomButton>
+                            </ChatRoom>
+                            {selectedRoomId === 2 && (
+                                <MemberList>{/* member list */}</MemberList>
+                            )}
+                        </div>
+
+                        <div>
+                            <ChatRoom onClick={() => handleRoomClick(3)}>
+                                <span>
+                                    음성 채팅
+                                    <FaMicrophone
+                                        title="음성을 공유할 수 있습니다."
+                                        style={{
+                                            marginLeft: "15px",
+                                            color: "#aaa",
+                                        }}
+                                        size={18}
+                                    />
+                                </span>
+                                <EnterRoomButton
+                                    onClick={(event) => {
+                                        event.stopPropagation();
+                                        handleRoomEnter("voice");
+                                    }}
+                                >
+                                    <FaSignInAlt size={18} />
+                                </EnterRoomButton>
+                            </ChatRoom>
+                            {selectedRoomId === 3 && (
+                                <MemberList>{/* member list */}</MemberList>
+                            )}
+                        </div>
                     </ChatRoomContainer>
                     <MicScreenControl>
-                        <ControlButton
-                            active={isMicActive}
-                            onClick={toggleMicActive}
-                        >
-                            <FaMicrophone size={20} />
+                        <ControlButton>
+                            <FaClipboard size={20} />
                         </ControlButton>
-                        <ControlButton
-                            active={isScreenActive}
-                            onClick={toggleScreenActive}
-                        >
-                            <FaDesktop size={20} />
-                        </ControlButton>
+                        {true && (
+                            <ControlButton>
+                                <FaUserCog size={20} />
+                            </ControlButton>
+                        )}
                     </MicScreenControl>
                 </SidebarSection>
             </GroupMain>

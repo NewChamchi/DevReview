@@ -23,7 +23,7 @@ const GroupManagePageComponent = (props) => {
         <GroupManagePageComponentBlock>
             <h2>모임 관리</h2>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <div className="first-section" style={{ width: "25%" }}>
+                <div className="first-section" style={{ width: "40%" }}>
                     <StyledLabel>모임명</StyledLabel>
                     <StyledInput
                         type="text"
@@ -36,7 +36,7 @@ const GroupManagePageComponent = (props) => {
                         onChange={(e) => setGroupDescription(e.target.value)}
                     />
                 </div>
-                <div className="second-section" style={{ width: "40%" }}>
+                {/* <div className="second-section" style={{ width: "40%" }}>
                     <ChatRoomManagementContainer>
                         {chatRooms.map((room, index) => (
                             <div key={index}>
@@ -54,10 +54,10 @@ const GroupManagePageComponent = (props) => {
                         ))}
                     </ChatRoomManagementContainer>
                     <ChatRoomCreateButton>채팅방 생성</ChatRoomCreateButton>
-                </div>
+                </div> */}
                 {/* 공지사항 작성 기능 추가 */}
 
-                <div className="third-section" style={{ width: "25%" }}>
+                <div className="third-section" style={{ width: "40%" }}>
                     <StyledLabel>공지사항 제목</StyledLabel>
                     <StyledInput
                         type="text"

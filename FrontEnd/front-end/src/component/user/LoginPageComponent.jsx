@@ -2,20 +2,39 @@ import React from "react";
 import styled from "styled-components";
 
 const LoginPageComponent = (props) => {
-    const { onLogin, onSignUp, onFindID, onFindPassword } = props;
+    const {
+        username,
+        setUsername,
+        onLogin,
+        onSignUp,
+        onFindID,
+        onFindPassword,
+    } = props;
     return (
         <LoginPageComponentBlock>
             <h2>로그인</h2>
             <div className="input-field">
                 <label htmlFor="username">아이디</label>
-                <input type="text" id="username" name="username" />
+                <input
+                    type="text"
+                    id="username"
+                    name="username"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                />
             </div>
             <div className="input-field">
                 <label htmlFor="password">비밀번호</label>
                 <input type="password" id="password" name="password" />
             </div>
             <div className="buttons">
-                <button className="login-button" onClick={onLogin}>
+                <button
+                    className="login-button"
+                    onClick={() => {
+                        console.log("로그인 버튼 클릭");
+                        onLogin(username);
+                    }}
+                >
                     로그인
                 </button>
                 <button className="signup-button" onClick={onSignUp}>

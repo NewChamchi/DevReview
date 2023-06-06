@@ -297,6 +297,7 @@ const GroupListPageContainer = () => {
     };
 
     const onGetIntoGroup = (groupId) => {
+        navigate(`/groupMain/${groupId}`);
         // 모임 진입 로직
         console.log("Get into group!");
     };
