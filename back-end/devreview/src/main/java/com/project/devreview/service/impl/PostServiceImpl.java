@@ -1,11 +1,18 @@
 package com.project.devreview.service.impl;
 
 import com.project.devreview.model.domain.Post;
+import com.project.devreview.model.domain.Question;
+import com.project.devreview.model.domain.Team;
 import com.project.devreview.model.dto.PostDTO;
+import com.project.devreview.model.dto.QuestionDTO;
+import com.project.devreview.model.dto.TeamDTO;
 import com.project.devreview.repository.PostRepository;
 import com.project.devreview.repository.TeamRepository;
 import com.project.devreview.service.interf.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,6 +43,15 @@ public class PostServiceImpl implements PostService {
     public List<PostDTO> readPostByGroup(Long groupid) {
         List<Post> posts = postRepository.findByTeam(teamRepository.findById(groupid).get());
         return PostDTO.listEntityToDto(posts);
+    }
+
+    @Override
+    public Page<PostDTO> readPostByGroup(TeamDTO teamDTO, int page) {
+        Pageable pageable = PageRequest.of(page, 8);
+        Page<Post> entities = postRepository.findAllByTeam(pageable,teamDTO.toEntity());
+        Page<PostDTO> postDTOS = entities.map(PostDTO::toDto);
+
+        return postDTOS;
     }
 
     @Override

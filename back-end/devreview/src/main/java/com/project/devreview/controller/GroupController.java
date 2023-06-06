@@ -44,9 +44,16 @@ public class GroupController {
         if(search==null) search = "";
         if(page==null) page=1;
 
-        Page<TeamDTO> teams = teamService.getList(page-1);
-        List<TeamDTO> teamDTOS = teams.stream().toList();
+
         JSONObject teamjsons = new JSONObject();
+
+        Page<TeamDTO> teams = teamService.getList(page-1);
+        List<TeamDTO> teamDTOS = teamService.readTeamList();
+        int count = teamDTOS.size();
+        int pagecount = (int) Math.ceil(count/8.0);
+        teamjsons.put("pageCount",pagecount);
+        teamjsons.put("currentPage",page);
+
         JSONArray groups = new JSONArray();
         for(TeamDTO teamDTO : teams){
             JSONObject temp = new JSONObject();
@@ -79,15 +86,37 @@ public class GroupController {
 
     }
 
-/*    @GetMapping(value = {"/post/list/{search}&{page}","/post/list"})
+    @GetMapping(value = {"/post/list/{search}&{page}&{id}","/post/list","/post/list/{id}"})
     public ResponseEntity<Object> readPostList(
             @PathVariable(value = "search", required = false) String search,
-            @PathVariable(value = "page", required = false) Integer page)
+            @PathVariable(value = "page", required = false) Integer page,
+            @PathVariable(value = "id") Long id)
     {
         if(search==null) search = "";
         if(page==null) page=1;
 
-    }*/
+        TeamDTO teamDTO = teamService.readTeamById(id);
+        List<PostDTO> postList = postService.readPostByGroup(id);
+        int count = postList.size();
+        int pagecount = (int) Math.ceil(count/8.0);
+        Page<PostDTO> postDTOS = postService.readPostByGroup(teamDTO,page-1);
+        JSONObject result = new JSONObject();
+        result.put("pageCount",pagecount);
+        result.put("currentPage",page);
+
+        JSONArray postarray = new JSONArray();
+        for(PostDTO postDTO : postDTOS){
+            JSONObject post = new JSONObject();
+            post.put("no",postDTO.getId());
+            post.put("title",postDTO.getTitle());
+            post.put("author",postDTO.getUserDTO().getName());
+            post.put("date",postDTO.getDatetime());
+            postarray.put(post);
+        }
+        result.put("groupPostArray",postarray);
+
+        return new ResponseEntity<>(result.toMap(),HttpStatus.OK);
+    }
 
     @GetMapping("/post/{id}")
     public ResponseEntity<Object> readPost(@PathVariable(value = "id") Long id){
