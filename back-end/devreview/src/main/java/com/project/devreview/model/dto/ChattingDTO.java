@@ -45,10 +45,22 @@ public class ChattingDTO {
         this.datetime = chatting.getDatetime();
         this.userDTO = UserDTO.toDto(chatting.getUser());
         this.teamDTO = TeamDTO.toDto(chatting.getTeam());
-        this.attachedFile = AttachedFileDTO.toDto(chatting.getAttachedFile());
+        if(chatting.getAttachedFile()!=null){
+            this.attachedFile = AttachedFileDTO.toDto(chatting.getAttachedFile());
+        }
+
     }
 
     public Chatting toEntity(){
+        if (attachedFile == null) {
+            return Chatting.builder()
+                    .id(id)
+                    .content(content)
+                    .datetime(datetime)
+                    .user(userDTO.toEntity())
+                    .team(teamDTO.toEntity())
+                    .build();
+        }
         return Chatting.builder()
                 .id(id)
                 .content(content)

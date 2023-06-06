@@ -6,6 +6,7 @@ import com.project.devreview.model.domain.UserTeam;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -15,7 +16,7 @@ public interface UserTeamRepository extends JpaRepository<UserTeam,Long> {
     UserTeam findByUserAndTeam(User user, Team team);
     @Modifying(clearAutomatically = true)
     @Query("UPDATE user_group a SET a.isBlock = true WHERE a.id = :id")
-    int updateStateBlock(Long id);
+    int updateStateBlock(@Param("id") Long id);
     @Modifying(clearAutomatically = true)
     @Query("UPDATE user_group a SET a.isBlock = false WHERE a.id = :id")
     int updateStateNotBlock(Long id);

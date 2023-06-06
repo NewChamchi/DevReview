@@ -1,5 +1,6 @@
 package com.project.devreview.model.domain;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -35,6 +36,7 @@ public class Team {
 
     @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     @JoinColumn(name = "notice_id")
+    @Nullable()
     private Notice notice;
 
 

@@ -46,6 +46,7 @@ public class QnAController {
         if(search==null) search = "";
         if(page==null) page=1;
 
+        int count = questionService.readAll().size();
         Page<QuestionDTO> questionlist = questionService.readAllforPage(page-1);
         JSONArray questionArray = new JSONArray();
         for(QuestionDTO questionDTO:questionlist.getContent()){
@@ -65,7 +66,12 @@ public class QnAController {
             questionjson.put("views",questionDTO.getHit());
             questionArray.put(questionjson);
         }
-        return new ResponseEntity<>(questionArray.toList(), HttpStatus.OK);
+        JSONObject questioncount = new JSONObject();
+        questioncount.put("questionCount",count);
+        JSONObject result = new JSONObject();
+        result.put("questionList",questionArray);
+        result.put("questionCount",count);
+        return new ResponseEntity<>(result.toMap(), HttpStatus.OK);
     }
 
     //api test ok
@@ -171,7 +177,7 @@ public class QnAController {
             type = true;
         }
         QuestionDTO questionDTO = new QuestionDTO(
-                map.get("title").toString(),map.get("content").toString(), LocalDateTime.now().plusHours(9),0,type,finduser
+                map.get("title").toString(),map.get("content").toString(), LocalDateTime.now(),0,type,finduser
         );
 
         questionService.registerQues(questionDTO);
@@ -268,7 +274,7 @@ public class QnAController {
     @ResponseBody
     public String registerAnswer(@RequestBody Map<String, Object> map){
         AnswerDTO answerDTO = new AnswerDTO(
-                map.get("content").toString(),LocalDateTime.now().plusHours(9),
+                map.get("content").toString(),LocalDateTime.now(),
                 userService.findUserByName(map.get("author").toString()),
                 questionService.readQues(Long.valueOf(map.get("questionId").toString())));
         answerService.registerAnswer(answerDTO);
@@ -299,7 +305,7 @@ public class QnAController {
     @ResponseBody
     public String registerComment(@RequestBody Map<String, Object> map){
         CommentDTO commentDTO = new CommentDTO(
-                map.get("content").toString(),LocalDateTime.now().plusHours(9),
+                map.get("content").toString(),LocalDateTime.now(),
                 answerService.readById(Long.valueOf(map.get("answerId").toString())),
                 userService.findUserByName(map.get("author").toString())
         );

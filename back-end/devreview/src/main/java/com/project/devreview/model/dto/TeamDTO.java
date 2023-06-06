@@ -33,10 +33,20 @@ public class TeamDTO {
         this.id = team.getId();
         this.name = team.getName();
         this.intro = team.getIntro();
-        this.noticeDTO = NoticeDTO.toDto(team.getNotice());
+        if(team.getNotice()!=null){
+
+            this.noticeDTO = NoticeDTO.toDto(team.getNotice());
+        }
     }
 
     public Team toEntity(){
+        if(noticeDTO==null){
+            return Team.builder()
+                    .id(id)
+                    .name(name)
+                    .intro(intro)
+                    .build();
+        }
         return Team.builder()
                 .id(id)
                 .name(name)
