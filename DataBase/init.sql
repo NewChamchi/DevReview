@@ -27,14 +27,13 @@ CREATE TABLE `answer` (
   `ques_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `ans_content` text NOT NULL,
-  `ans_is_auto` tinyint(4) DEFAULT NULL,
   `ans_time` datetime DEFAULT NULL,
   PRIMARY KEY (`ans_id`),
   KEY `user_id_idx` (`user_id`),
   KEY `ques_id_idx` (`ques_id`),
   CONSTRAINT `answer_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `answer_ibfk_2` FOREIGN KEY (`ques_id`) REFERENCES `question` (`ques_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -43,6 +42,7 @@ CREATE TABLE `answer` (
 
 LOCK TABLES `answer` WRITE;
 /*!40000 ALTER TABLE `answer` DISABLE KEYS */;
+INSERT INTO `answer` VALUES (2,3,1,'전면수정합니다','2023-06-06 03:41:19');
 /*!40000 ALTER TABLE `answer` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -126,7 +126,7 @@ CREATE TABLE `comment` (
   KEY `user_id_idx` (`user_id`),
   CONSTRAINT `FK2md1vioaqfcau5jr6d9umllva` FOREIGN KEY (`ans_id`) REFERENCES `answer` (`ans_id`),
   CONSTRAINT `FK8kcum44fvpupyw6f5baccx25c` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -135,6 +135,7 @@ CREATE TABLE `comment` (
 
 LOCK TABLES `comment` WRITE;
 /*!40000 ALTER TABLE `comment` DISABLE KEYS */;
+INSERT INTO `comment` VALUES (2,'이 답변은 정말 도움이 되었습니다! Redux와 MobX에 대한 이해가 더 깊어졌어요.','2023-06-06 03:56:30.137660',2,2);
 /*!40000 ALTER TABLE `comment` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -149,8 +150,11 @@ CREATE TABLE `group` (
   `group_id` int(11) NOT NULL AUTO_INCREMENT,
   `group_name` varchar(45) NOT NULL,
   `group_intro` varchar(1000) DEFAULT NULL,
-  PRIMARY KEY (`group_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `notice_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`group_id`),
+  KEY `notice_id_idx` (`notice_id`),
+  CONSTRAINT `notice_id` FOREIGN KEY (`notice_id`) REFERENCES `notice` (`notice_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -159,6 +163,7 @@ CREATE TABLE `group` (
 
 LOCK TABLES `group` WRITE;
 /*!40000 ALTER TABLE `group` DISABLE KEYS */;
+INSERT INTO `group` VALUES (1,'firstgroup','처음 만나는 devreview',NULL);
 /*!40000 ALTER TABLE `group` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -171,13 +176,10 @@ DROP TABLE IF EXISTS `notice`;
  SET character_set_client = utf8mb4 ;
 CREATE TABLE `notice` (
   `notice_id` int(11) NOT NULL AUTO_INCREMENT,
-  `group_id` int(11) NOT NULL,
   `notice_title` varchar(255) NOT NULL,
   `notice_content` text NOT NULL,
   `notice_time` datetime DEFAULT NULL,
-  PRIMARY KEY (`notice_id`),
-  KEY `group_id_idx` (`group_id`),
-  CONSTRAINT `group_id` FOREIGN KEY (`group_id`) REFERENCES `group` (`group_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+  PRIMARY KEY (`notice_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -203,10 +205,13 @@ CREATE TABLE `post` (
   `post_content` text NOT NULL,
   `group_id` int(11) NOT NULL,
   `post_time` datetime DEFAULT NULL,
+  `user_id` int(11) NOT NULL,
   PRIMARY KEY (`post_id`),
   KEY `group_id_idx` (`group_id`),
-  CONSTRAINT `group_id_idx` FOREIGN KEY (`group_id`) REFERENCES `group` (`group_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  KEY `user_id_idx` (`user_id`),
+  CONSTRAINT `group_id_idx` FOREIGN KEY (`group_id`) REFERENCES `group` (`group_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `user_id_idx` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -215,6 +220,7 @@ CREATE TABLE `post` (
 
 LOCK TABLES `post` WRITE;
 /*!40000 ALTER TABLE `post` DISABLE KEYS */;
+INSERT INTO `post` VALUES (1,'첫 게시글','처음으로 업로드하는 모임 게시글',1,'2023-06-06 15:16:41',1);
 /*!40000 ALTER TABLE `post` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -261,10 +267,11 @@ CREATE TABLE `question` (
   `ques_content` text NOT NULL,
   `ques_time` datetime DEFAULT NULL,
   `ques_hit` int(11) NOT NULL,
+  `type` tinyint(4) NOT NULL,
   PRIMARY KEY (`ques_id`),
   KEY `user_id_idx` (`user_id`),
   CONSTRAINT `user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -273,7 +280,7 @@ CREATE TABLE `question` (
 
 LOCK TABLES `question` WRITE;
 /*!40000 ALTER TABLE `question` DISABLE KEYS */;
-INSERT INTO `question` VALUES (2,'newpost',1,'newcontent','2023-06-01 16:53:19',0),(3,'React에서 상태 관리 라이브러리 사용 방법',2,'<p>안녕하세요! React 프로젝트를 진행하면서 상태 관리 라이브러리를 사용하려고 합니다.</p><p>Redux와 MobX 중 어떤 것을 사용하는 것이 좋을까요? 각 라이브러리의 장단점에 대해 알려주시면 감사하겠습니다.</p><p>또한, 선택한 라이브러리를 React 프로젝트에 통합하는 방법에 대해서도 조언을 구하고 싶습니다.</p><p>감사합니다!</p>','2023-06-05 07:41:58',0);
+INSERT INTO `question` VALUES (2,'newpost',1,'newcontent','2023-06-01 16:53:19',2,0),(3,'React에서 상태 관리 라이브러리 사용 방법',2,'<p>안녕하세요! React 프로젝트를 진행하면서 상태 관리 라이브러리를 사용하려고 합니다.</p><p>Redux와 MobX 중 어떤 것을 사용하는 것이 좋을까요? 각 라이브러리의 장단점에 대해 알려주시면 감사하겠습니다.</p><p>또한, 선택한 라이브러리를 React 프로젝트에 통합하는 방법에 대해서도 조언을 구하고 싶습니다.</p><p>감사합니다!</p>','2023-06-05 07:41:58',10,0),(16,'React에서 상태 관리 라이브러리 사용 방법',1,'<p>안녕하세요! React 프로젝트를 진행하면서 상태 관리 라이브러리를 사용하려고 합니다.</p><p>Redux와 MobX 중 어떤 것을 사용하는 것이 좋을까요? 각 라이브러리의 장단점에 대해 알려주시면 감사하겠습니다.</p><p>또한, 선택한 라이브러리를 React 프로젝트에 통합하는 방법에 대해서도 조언을 구하고 싶습니다.</p><p>감사합니다!</p>','2023-06-05 16:55:57',3,0),(18,'test',1,'testcontent','2023-06-06 19:41:55',0,0);
 /*!40000 ALTER TABLE `question` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -293,7 +300,7 @@ CREATE TABLE `question_tag` (
   KEY `tag_idd_idx` (`tag_id`),
   CONSTRAINT `question_tag_ibfk_1` FOREIGN KEY (`ques_id`) REFERENCES `question` (`ques_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `tag_id` FOREIGN KEY (`tag_id`) REFERENCES `tag` (`tag_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -302,6 +309,7 @@ CREATE TABLE `question_tag` (
 
 LOCK TABLES `question_tag` WRITE;
 /*!40000 ALTER TABLE `question_tag` DISABLE KEYS */;
+INSERT INTO `question_tag` VALUES (16,12,5),(16,13,6),(16,14,7),(18,10,12),(18,12,14),(18,15,15);
 /*!40000 ALTER TABLE `question_tag` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -316,7 +324,7 @@ CREATE TABLE `tag` (
   `tag_id` int(11) NOT NULL AUTO_INCREMENT,
   `tag_name` varchar(45) NOT NULL,
   PRIMARY KEY (`tag_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -325,7 +333,7 @@ CREATE TABLE `tag` (
 
 LOCK TABLES `tag` WRITE;
 /*!40000 ALTER TABLE `tag` DISABLE KEYS */;
-INSERT INTO `tag` VALUES (1,'Spring');
+INSERT INTO `tag` VALUES (1,'Spring'),(9,'NLP'),(10,'MachineLearning'),(11,'AI'),(12,'React'),(13,'Redux'),(14,'MobX'),(15,'Test');
 /*!40000 ALTER TABLE `tag` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -375,7 +383,7 @@ CREATE TABLE `user_group` (
   KEY `group_id_ix_idx` (`group_id`),
   CONSTRAINT `group_id_ix` FOREIGN KEY (`group_id`) REFERENCES `group` (`group_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `user_id_ix` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -384,6 +392,7 @@ CREATE TABLE `user_group` (
 
 LOCK TABLES `user_group` WRITE;
 /*!40000 ALTER TABLE `user_group` DISABLE KEYS */;
+INSERT INTO `user_group` VALUES (1,1,0,1);
 /*!40000 ALTER TABLE `user_group` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -396,4 +405,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-06-05 21:44:57
+-- Dump completed on 2023-06-06 20:53:29
