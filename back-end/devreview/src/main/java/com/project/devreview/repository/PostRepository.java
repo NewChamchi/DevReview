@@ -19,4 +19,5 @@ public interface PostRepository extends JpaRepository<Post,Long> {
     int updateTitleAndContent(Long id, String title, String content);
 
     Page<Post> findAllByTeam(Pageable pageable, Team team);
+    Page<Post> findByTitleContaining(Pageable pageable, String search, Team team);
 }

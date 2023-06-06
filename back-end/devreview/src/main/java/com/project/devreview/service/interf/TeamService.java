@@ -16,4 +16,5 @@ public interface TeamService {
     public int deleteTeamById(Long id);
 
     public Page<TeamDTO> getList(int page);
+    public Page<TeamDTO> getSearchOrderList(int page, String search);
 }

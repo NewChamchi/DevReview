@@ -14,6 +14,7 @@ public interface QuestionService {
     public QuestionDTO readByTitleAndUser(QuestionDTO questionDTO);
     public List<QuestionDTO> readAll();
     public Page<QuestionDTO> readAllforPage(int page);
+    public Page<QuestionDTO> readBySearchforPage(int page, String search);
     public List<AnswerDTO> readAnswers(Long id);
     public Boolean updateQues(QuestionDTO questionDTO);
     public Boolean updateHit(Long id);

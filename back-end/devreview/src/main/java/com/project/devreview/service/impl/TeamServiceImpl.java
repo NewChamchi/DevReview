@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -60,6 +61,14 @@ public class TeamServiceImpl implements TeamService {
         Pageable pageable = PageRequest.of(page,8);
         Page<Team> team = teamRepository.findAll(pageable);
         Page<TeamDTO> teamDTOS = TeamDTO.toPageDtoList(team);
+        return teamDTOS;
+    }
+
+    @Override
+    public Page<TeamDTO> getSearchOrderList(int page, String search) {
+        Pageable pageable = PageRequest.of(page, 8, Sort.Direction.DESC);
+        Page<Team> entities = teamRepository.findByNameContaining(search,pageable);
+        Page<TeamDTO> teamDTOS = entities.map(TeamDTO::toDto);
         return teamDTOS;
     }
 }

@@ -17,6 +17,7 @@ public interface QuestionRepository extends Repository<Question, Long> {
     Question save(Question question);
     List<Question> findAll();
     Page<Question> findAll(Pageable pageable);
+    Page<Question> findByTitleContaining(Pageable pageable, String search);
     Question findById(Long id);
     Question findByTitleAndUser(String title, User user);
 

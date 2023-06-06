@@ -12,6 +12,7 @@ public interface PostService {
     public PostDTO readPostById(Long id);
     public List<PostDTO> readPostByGroup(Long groupid);
     public Page<PostDTO> readPostByGroup(TeamDTO teamDTO, int page);
+    public Page<PostDTO> readPostBySearchOrder(TeamDTO teamDTO, String search, int page);
 
     public int updatePost(PostDTO postDTO);
     public int deletePost(Long id);
