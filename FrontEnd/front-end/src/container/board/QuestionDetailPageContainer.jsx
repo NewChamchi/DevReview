@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import QuestionDetailPageComponent from "../../component/board/QuestionDetailPageComponent";
 import { useNavigate, useParams } from "react-router-dom";
+import axios from "axios";
 
 // chatGPT 질문 시에 사용되는 예시 데이터
 // const questionDummyData = {

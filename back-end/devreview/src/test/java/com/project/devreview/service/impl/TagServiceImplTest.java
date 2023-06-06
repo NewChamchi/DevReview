@@ -17,7 +17,7 @@ class TagServiceImplTest {
 
     @Test
     void setNewTag() {
-        tagService.setNewTag("Spring");
+        tagService.setNewTag(new TagDTO("Spring"));
     }
 
     @Test

@@ -17,10 +17,10 @@ public class TagServiceImpl implements TagService {
     @Autowired
     TagRepository tagRepository;
     @Override
-    public int setNewTag(String name) {
-        Tag tag = new Tag(name);
-        tagRepository.save(tag);
-        return 0;
+    public Long setNewTag(TagDTO tagDTO) {
+//        Tag tag = new Tag(name);
+        tagRepository.save(tagDTO.toEntity());
+        return tagRepository.findByName(tagDTO.getName()).getId();
     }
     @Override
     public TagDTO readTag(Long id){

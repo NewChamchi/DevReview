@@ -15,5 +15,5 @@ public interface QuesTagRepository extends Repository<QuesTag, Long> {
     QuesTag findById(Long id);
 
     Boolean deleteById(Long id);
-    Boolean deleteByQuestionAndTag(Question quesId, Tag TagId);
+    int deleteByQuestionAndTag(Question quesId, Tag TagId);
 }

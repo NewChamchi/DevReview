@@ -1,8 +1,12 @@
 package com.project.devreview.model.dto;
 
 import com.project.devreview.model.domain.User;
+import com.project.devreview.model.domain.UserTeam;
 import lombok.Builder;
 import lombok.Data;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 public class UserDTO {
@@ -51,5 +55,8 @@ public class UserDTO {
     public static UserDTO toDto(User user){
         return new UserDTO(user);
     }
-
+    public static List<UserDTO> listEntityToDto(List<User> users){
+        return users.stream()
+                .map(UserDTO::toDto).collect(Collectors.toList());
+    }
 }

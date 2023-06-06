@@ -10,6 +10,7 @@ export default defineConfig({
             fs: true,
         },
         proxy: {
+<<<<<<< HEAD
             "/api": {
                 target: "http://localhost:8080",
                 changeOrigin: true,
@@ -17,4 +18,14 @@ export default defineConfig({
             },
         },
     },
+=======
+            '/api': {
+                target: 'http://localhost:8080',
+                changeOrigin: true,
+                secure: false,
+            }
+        },
+    }
+
+>>>>>>> f8c4865085c239e9ba5fbc24d981fd79978c83ec
 });
