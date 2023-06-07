@@ -57,7 +57,8 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Page<PostDTO> readPostBySearchOrder(TeamDTO teamDTO, String search, int page) {
-        Pageable pageable = PageRequest.of(page, 8, Sort.Direction.DESC);
+        Sort sort = Sort.by("datetime").descending();
+        Pageable pageable = PageRequest.of(page, 8, sort);
         Page<Post> entities = postRepository.findByTitleContaining(pageable,search,teamDTO.toEntity());
         Page<PostDTO> postDTOS = entities.map(PostDTO::toDto);
         return postDTOS;

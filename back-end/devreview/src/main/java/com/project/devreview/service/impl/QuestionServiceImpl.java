@@ -68,7 +68,8 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     public Page<QuestionDTO> readBySearchforPage(int page, String search) {
-        Pageable pageable = PageRequest.of(page,10, Sort.Direction.DESC);
+        Sort sort = Sort.by("time").descending();
+        Pageable pageable = PageRequest.of(page,10, sort);
         Page<Question> entities = questionRepository.findByTitleContaining(pageable,search);
         Page<QuestionDTO> questionDTOS = entities.map(QuestionDTO::toDto);
         return questionDTOS;
