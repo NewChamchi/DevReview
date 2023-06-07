@@ -33,13 +33,10 @@ app.post("/api/agora-token", (req, res) => {
     // Your Agora app ID and app certificate
     const appId = "4d382177f2384d17a591503425d8635e";
     const appCertificate = "c7a5653310ee415db907571e88d166c3";
-
     const expirationTimeInSeconds = 3600;
     const currentTimestamp = Math.floor(Date.now() / 1000);
     const privilegeExpiredTs = currentTimestamp + expirationTimeInSeconds;
-
     const role = AgoraToken.RtcRole.PUBLISHER;
-
     const token = AgoraToken.RtcTokenBuilder.buildTokenWithUid(
         appId,
         appCertificate,
@@ -48,7 +45,7 @@ app.post("/api/agora-token", (req, res) => {
         role,
         privilegeExpiredTs
     );
-
+    console.log("Token generated: " + token);
     res.send({ token });
 });
 

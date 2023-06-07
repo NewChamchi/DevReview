@@ -3,8 +3,8 @@ import io from "socket.io-client";
 import GroupMainPageComponent from "../../component/group/GroupMainPageComponent";
 import { useRecoilValue } from "recoil";
 import { rc_user_informationAtom } from "../../recoil/atoms";
-import AgoraRTC from "agora-rtc-sdk";
-import { initializeAgora } from "../../api/agroaApi";
+import AgoraRTC from "agora-rtc-sdk-ng";
+import { initializeAgoraVoiceChannel } from "../../api/agroaApi";
 
 const groupMainDummyData = {
     noticeTitle: "주간 공부 계획",
@@ -82,7 +82,7 @@ const groupMainDummyData = {
 };
 const GroupMainPageContainer = () => {
     const { name: currentUser } = useRecoilValue(rc_user_informationAtom);
-
+    const [currentUsers, setCurrentUsers] = useState([]);
     const [socket, setSocket] = useState(null);
     const [groupMainData, setGroupMainData] = useState({});
     const [chatMessage, setChatMessage] = useState("");
@@ -93,6 +93,7 @@ const GroupMainPageContainer = () => {
     const [isMicActive, setIsMicActive] = useState(false);
     const [isScreenActive, setIsScreenActive] = useState(false);
 
+    const [localStream, setLocalStream] = useState(null);
     const portData = async () => {
         try {
             // const response = await axios.get("http://localhost:8080/api/group/1");
@@ -106,10 +107,10 @@ const GroupMainPageContainer = () => {
             console.error(error);
         }
     };
-    const client = AgoraRTC.createClient({ mode: "rtc", codec: "h264" });
-    client.init("4d382177f2384d17a591503425d8635e", () => {
-        console.log("AgoraRTC client initialized");
-    });
+    const [localAudioTrack, setLocalAudioTrack] = useState(null);
+    const [remoteUsers, setRemoteUsers] = useState({});
+    const client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
+
     const toggleMicActive = () => setIsMicActive(!isMicActive);
     const toggleScreenActive = () => setIsScreenActive(!isScreenActive);
     const handleRoomClick = (roomId) => {
@@ -117,16 +118,109 @@ const GroupMainPageContainer = () => {
         console.log("roomId: ", roomId);
     };
 
-    const handleRoomEnter = (roomName) => {
-        // logic to enter the room
+    const handleRoomEnter = async (roomName) => {
+        if (roomName === "chat") {
+            setRoomType("chat");
+            return;
+        } else if (roomName === "voice") {
+            setRoomType("voice");
+            const token = await initializeAgoraVoiceChannel(); // <- initializeAgora 호출
+            try {
+                const uid = await client.join(
+                    "4d382177f2384d17a591503425d8635e",
+                    "voiceChannel",
+                    token
+                );
+                console.log("User " + uid + " join channel successfully");
+
+                // Create audio track
+                const localAudioTrack =
+                    await AgoraRTC.createMicrophoneAudioTrack();
+                setLocalAudioTrack(localAudioTrack); // <- 상태 값 업데이트
+
+                // Publish audio track
+                await client.publish([localAudioTrack]);
+
+                // 원격 사용자가 접속하면 상태를 업데이트합니다.
+                client.on("user-published", async (remoteUser, mediaType) => {
+                    await client.subscribe(remoteUser, mediaType);
+                    console.log(
+                        "Subscribe remote audio stream successfully: " +
+                            remoteUser.uid
+                    );
+                    // Play the remote audio track
+                    if (mediaType === "audio") {
+                        remoteUser.audioTrack.play();
+
+                        // 사용자의 닉네임을 가져옵니다.
+                        const userNickname = remoteUser.uid;
+
+                        // 현재 원격 사용자들 상태에 새로운 사용자를 추가합니다.
+                        setRemoteUsers((users) => ({
+                            ...users,
+                            [userNickname]: remoteUser,
+                        }));
+                    }
+                });
+
+                // 원격 사용자가 나가면 상태를 업데이트합니다.
+                client.on("user-unpublished", (remoteUser, mediaType) => {
+                    console.log(
+                        "remoteUser " + remoteUser.uid + " left the channel"
+                    );
+                    if (mediaType === "audio") {
+                        remoteUser.audioTrack.stop();
+
+                        const userNickname = remoteUser.uid;
+
+                        // 현재 원격 사용자들 상태에서 나간 사용자를 삭제합니다.
+                        setRemoteUsers((users) => {
+                            const updatedUsers = { ...users };
+                            delete updatedUsers[userNickname];
+                            return updatedUsers;
+                        });
+                    }
+                });
+            } catch (err) {
+                console.log("Join channel failed", err);
+            }
+        }
     };
-    useEffect(() => {
-        const fetchData = async () => {
-            await portData();
-            await initializeAgora();
-        };
-        fetchData();
-    }, []);
+
+    // When the user leaves the room, unpublish and leave the channel
+    const leaveChannel = async () => {
+        if (localAudioTrack) {
+            localAudioTrack.stop();
+            localAudioTrack.close();
+            setLocalAudioTrack(null);
+        }
+
+        await client.leave();
+
+        // Remove remote users and reset state
+        setRemoteUsers({});
+    };
+
+    const handleRoomLeave = () => {
+        if (localStream) {
+            // <- localStream을 참조
+            client.unpublish(localStream, function (err) {
+                console.log("Unpublish local stream failed" + err);
+            });
+
+            setLocalStream(null); // <- 상태 값 업데이트
+        }
+
+        // 채널에서 나가기
+        client.leave(
+            () => {
+                console.log("Leave channel successfully");
+            },
+            (err) => {
+                console.log("Leave channel failed", err);
+            }
+        );
+    };
 
     useEffect(() => {
         const newSocket = io("http://localhost:3000");
@@ -158,13 +252,14 @@ const GroupMainPageContainer = () => {
     };
 
     useEffect(() => {
-        console.log("currentUser :", currentUser);
-    }, [currentUser]);
+        console.log("remoteUsers :", remoteUsers);
+    }, [remoteUsers]);
     const propDatas = {
         currentUser,
         groupMainData,
         chatMessage,
         roomType,
+        remoteUsers,
         isOpen,
         toggleOpen,
         selectedRoomId,

@@ -83,7 +83,7 @@ const GroupMainPageComponent = (props) => {
                             </ScreenShare>
                         )}
                         {roomType === "voice" && (
-                            <VoiceChat>
+                            <VoiceChat id="remote-stream">
                                 <VoiceChatText>
                                     음성 채팅 중입니다.
                                 </VoiceChatText>
@@ -453,4 +453,31 @@ const NoticeBubble = styled.div`
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.15); // To give a "lifted" effect
 `;
 
+const ScreenShare = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: #fff;
+`;
+
+const ScreenShareText = styled.p`
+    font-size: 1.2rem;
+    font-weight: bold;
+`;
+
+const VoiceChat = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: #fff;
+`;
+
+const VoiceChatText = styled.p`
+    font-size: 1.2rem;
+    font-weight: bold;
+`;
 export default GroupMainPageComponent;
