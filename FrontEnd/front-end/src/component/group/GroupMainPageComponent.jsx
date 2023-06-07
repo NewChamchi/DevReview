@@ -75,13 +75,13 @@ const GroupMainPageComponent = (props) => {
                                     <MessageText>{message.content}</MessageText>
                                 </ChatMessage>
                             ))}
-                        {roomType === "screen" && (
+                        {/* {roomType === "screen" && (
                             <ScreenShare>
                                 <ScreenShareText>
                                     화면 공유 중입니다.
                                 </ScreenShareText>
                             </ScreenShare>
-                        )}
+                        )} */}
                         {roomType === "voice" && (
                             <VoiceChat id="remote-stream">
                                 <VoiceChatText>
@@ -145,33 +145,6 @@ const GroupMainPageComponent = (props) => {
                                         <Member key={index}>{member}</Member>
                                     ))} */}
                                 </MemberList>
-                            )}
-                        </div>
-
-                        <div>
-                            <ChatRoom onClick={() => handleRoomClick(2)}>
-                                <span>
-                                    화면 공유
-                                    <FaDesktop
-                                        title="화면과 음성을 공유할 수 있습니다."
-                                        style={{
-                                            marginLeft: "15px",
-                                            color: "#aaa",
-                                        }}
-                                        size={18}
-                                    />
-                                </span>
-                                <EnterRoomButton
-                                    onClick={(event) => {
-                                        event.stopPropagation();
-                                        handleRoomEnter("screen");
-                                    }}
-                                >
-                                    <FaSignInAlt size={18} />
-                                </EnterRoomButton>
-                            </ChatRoom>
-                            {selectedRoomId === 2 && (
-                                <MemberList>{/* member list */}</MemberList>
                             )}
                         </div>
 

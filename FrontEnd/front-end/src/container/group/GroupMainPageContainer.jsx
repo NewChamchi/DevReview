@@ -223,7 +223,14 @@ const GroupMainPageContainer = () => {
     };
 
     useEffect(() => {
-        const newSocket = io("http://localhost:3000");
+        const fetchData = async () => {
+            await portData();
+        };
+        fetchData();
+    }, []);
+
+    useEffect(() => {
+        const newSocket = io("https://b7648bbfb4df.ngrok.app");
         setSocket(newSocket);
 
         return () => newSocket.disconnect();
@@ -250,10 +257,6 @@ const GroupMainPageContainer = () => {
                 content: message,
             });
     };
-
-    useEffect(() => {
-        console.log("remoteUsers :", remoteUsers);
-    }, [remoteUsers]);
     const propDatas = {
         currentUser,
         groupMainData,

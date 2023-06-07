@@ -7,6 +7,11 @@ const AgoraToken = require("agora-access-token"); // Agora Token Server SDK
 const app = express();
 app.use(cors());
 app.use(express.json());
+app.use(
+    cors({
+        origin: "https://27ccb8f5313a.ngrok.app",
+    })
+);
 
 const server = http.createServer(app);
 const io = socketIO(server, {
@@ -48,5 +53,4 @@ app.post("/api/agora-token", (req, res) => {
     console.log("Token generated: " + token);
     res.send({ token });
 });
-
 server.listen(3000, () => console.log("Server listening at port 3000"));

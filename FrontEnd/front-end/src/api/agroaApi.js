@@ -3,7 +3,7 @@ import axios from "axios";
 export const initializeAgoraVoiceChannel = async () => {
     try {
         const response = await axios.post(
-            "http://localhost:3000/api/agora-token",
+            "https://b7648bbfb4df.ngrok.app/api/agora-token",
             {
                 channelName: "voiceChannel",
             }
